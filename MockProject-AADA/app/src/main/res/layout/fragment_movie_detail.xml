@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <import type="ojt.aada.mockproject_aada.utils.FunctionUtils"/>
+        <variable
+            name="detail"
+            type="ojt.aada.domain.models.Movie" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.movie.detail.MovieDetailFragment"
+    android:background="@color/white"
+    android:layout_marginTop="50dp">
+
+    <ImageView
+        android:id="@+id/fav_star"
+        android:layout_width="73dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="16dp"
+        app:imageResource="@{FunctionUtils.displayStar(detail.favorite)}"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/detail_movie_release_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/release_date_text"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/fav_star"
+        app:layout_constraintTop_toTopOf="@+id/fav_star" />
+
+    <TextView
+        android:id="@+id/detail_release_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="@{detail.releaseDate}"
+        android:textColor="@color/red"
+        app:layout_constraintBottom_toBottomOf="@+id/detail_movie_release_date"
+        app:layout_constraintStart_toEndOf="@+id/detail_movie_release_date" />
+
+    <TextView
+        android:id="@+id/detail_movie_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/rating_text"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/fav_star"
+        app:layout_constraintStart_toEndOf="@+id/fav_star" />
+
+    <TextView
+        android:id="@+id/detail_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@{FunctionUtils.displayRating(detail.rating)}"
+        android:textColor="@color/red"
+        app:layout_constraintBottom_toBottomOf="@+id/detail_movie_rating"
+        app:layout_constraintStart_toEndOf="@+id/detail_movie_rating" />
+
+    <ImageView
+        android:id="@+id/movie_detail_poster"
+        android:layout_width="150dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="44dp"
+        android:src="@drawable/default_picture_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fav_star" />
+
+    <TextView
+        android:id="@+id/detail_movie_overview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/overview_text"
+        android:textColor="@color/red"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/movie_detail_poster"
+        app:layout_constraintTop_toTopOf="@+id/movie_detail_poster" />
+
+    <TextView
+        android:id="@+id/detail_overview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@{detail.overview}"
+        app:layout_constraintBottom_toBottomOf="@+id/movie_detail_poster"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/movie_detail_poster"
+        app:layout_constraintTop_toBottomOf="@id/detail_movie_overview" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/reminder_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_button"
+        android:text="@string/reminder_text"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="@+id/movie_detail_poster"
+        app:layout_constraintStart_toStartOf="@+id/movie_detail_poster"
+        app:layout_constraintTop_toBottomOf="@+id/movie_detail_poster" />
+
+    <TextView
+        android:id="@+id/castncrew_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/cast_amp_crew_text"
+        android:textColor="@color/red"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reminder_button" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cast_n_crew_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/castncrew_title"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/castncrew_item_view"/>
+
+    <ProgressBar
+        android:id="@+id/cast_n_crew_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/cast_n_crew_recycler_view"
+        app:layout_constraintEnd_toEndOf="@+id/cast_n_crew_recycler_view"
+        app:layout_constraintStart_toStartOf="@+id/cast_n_crew_recycler_view"
+        app:layout_constraintTop_toTopOf="@+id/cast_n_crew_recycler_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

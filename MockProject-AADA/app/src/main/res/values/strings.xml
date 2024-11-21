@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MockProject-AADA</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="change_layout_text">Change Layout</string>
+    <string name="gender_text">Gender</string>
+    <string name="edit_text">Edit</string>
+    <string name="date_format">yyyy/mm/dd</string>
+    <string name="example_email">abc@gmail.com</string>
+    <string name="example_user_name">Dat Huynh</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <string name="release_date_text">Release Date:</string>
+    <string name="rating_text">Rating:</string>
+    <string name="rating_format">.../10.0</string>
+    <string name="overview_text">Overview:</string>
+    <string name="cast_amp_crew_text"><![CDATA[Cast & Crew]]></string>
+    <string name="reminder_text">Reminder</string>
+</resources>
