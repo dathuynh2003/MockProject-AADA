@@ -30,8 +30,8 @@ public class CastnCrewRVAdapter extends ListAdapter<CastnCrew, CastnCrewRVAdapte
 
         @Override
         public boolean areContentsTheSame(CastnCrew oldItem, CastnCrew newItem) {
-            return oldItem.getActorName().equals(newItem.getActorName()) &&
-                    oldItem.getImg().equals(newItem.getImg());
+            return (oldItem.getActorName() != null && oldItem.getActorName().equals(newItem.getActorName())) &&
+                    (oldItem.getImg() != null && oldItem.getImg().equals(newItem.getImg()));
         }
     };
 

@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.FragmentMovieDetailBinding;
 import ojt.aada.mockproject.di.MyApplication;
-import ojt.aada.mockproject.ui.main.MovieViewModel;
+import ojt.aada.mockproject.ui.main.MainViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +30,7 @@ public class MovieDetailFragment extends Fragment {
     private FragmentMovieDetailBinding binding;
     private CastnCrewRVAdapter adapter;
     @Inject
-    MovieViewModel mViewModel;
+    MainViewModel mViewModel;
 
     public MovieDetailFragment() {
         // Required empty public constructor
@@ -72,7 +72,9 @@ public class MovieDetailFragment extends Fragment {
 
 
         mViewModel.getCastNCrewLiveData().observe(getViewLifecycleOwner(), castNCrew -> {
-            adapter.submitList(castNCrew);
+            if (castNCrew != null) {
+                adapter.submitList(castNCrew);
+            }
             binding.castNCrewPb.setVisibility(View.GONE);
         });
 

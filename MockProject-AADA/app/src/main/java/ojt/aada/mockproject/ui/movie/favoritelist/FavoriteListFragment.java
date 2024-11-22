@@ -17,12 +17,12 @@ import javax.inject.Inject;
 
 import ojt.aada.mockproject.databinding.FragmentFavoriteListBinding;
 import ojt.aada.mockproject.di.MyApplication;
-import ojt.aada.mockproject.ui.main.MovieViewModel;
+import ojt.aada.mockproject.ui.main.MainViewModel;
 
 public class FavoriteListFragment extends Fragment {
 
     @Inject
-    MovieViewModel mViewModel;
+    MainViewModel mViewModel;
 
     private FragmentFavoriteListBinding binding;
     private FavoriteListRVAdapter mFavoriteListRVAdapter;

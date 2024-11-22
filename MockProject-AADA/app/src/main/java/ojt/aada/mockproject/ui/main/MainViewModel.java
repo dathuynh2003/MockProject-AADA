@@ -25,7 +25,7 @@ import ojt.aada.domain.usecase.GetMovieDetailUseCase;
 import ojt.aada.domain.usecase.GetMoviesUseCase;
 
 @Singleton
-public class MovieViewModel extends ViewModel {
+public class MainViewModel extends ViewModel {
     private final MutableLiveData<PagingData<Movie>> mMovieListLiveData;
     private LiveData<List<Movie>> mFavoriteMoviesLiveData;
     private final MutableLiveData<Movie> mSelectedMovieLiveData;
@@ -38,7 +38,7 @@ public class MovieViewModel extends ViewModel {
     private final GetCastNCrewUseCase mGetCastNCrewUseCase;
 
     @Inject
-    public MovieViewModel(GetMoviesUseCase getMoviesUseCase, GetMovieDetailUseCase getMovieDetailUseCase, GetCastNCrewUseCase getCastNCrewUseCase) {
+    public MainViewModel(GetMoviesUseCase getMoviesUseCase, GetMovieDetailUseCase getMovieDetailUseCase, GetCastNCrewUseCase getCastNCrewUseCase) {
         mGetMoviesUseCase = getMoviesUseCase;
         mCompositeDisposable = new CompositeDisposable();
         mGetMovieDetailUseCase = getMovieDetailUseCase;

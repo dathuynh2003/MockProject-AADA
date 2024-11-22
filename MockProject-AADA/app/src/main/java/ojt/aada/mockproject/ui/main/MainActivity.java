@@ -5,14 +5,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -20,6 +24,7 @@ import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.ActivityMainBinding;
 import ojt.aada.mockproject.di.MyApplication;
 import ojt.aada.mockproject.ui.about.AboutFragment;
+import ojt.aada.mockproject.ui.container.ContainerFragment;
 import ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment;
 import ojt.aada.mockproject.ui.movie.favoritelist.FavoriteListFragment;
 import ojt.aada.mockproject.ui.movie.list.MovieListFragment;
@@ -29,11 +34,15 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private boolean mIsGrid;
     @Inject
-    MovieViewModel mViewModel;
-    private MovieListFragment movieListFragment;
+    MainViewModel mViewModel;
+    private ContainerFragment containerFragment;
+    //    private MovieListFragment movieListFragment;
     private FavoriteListFragment favListFragment;
     private AboutFragment aboutFragment;
     private MovieDetailFragment movieDetailFragment;
+
+    private ArrayList<Fragment> fragmentArrayList;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +56,19 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolBar);
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.getRoot(), binding.toolBar, R.string.nav_open, R.string.nav_close);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.getRoot(), binding.toolBar, R.string.nav_open, R.string.nav_close);
         binding.getRoot().addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
 
-        movieListFragment = MovieListFragment.newInstance();
+//        movieListFragment = MovieListFragment.newInstance();
+        containerFragment = ContainerFragment.newInstance();
         favListFragment = FavoriteListFragment.newInstance();
         aboutFragment = AboutFragment.newInstance();
         movieDetailFragment = MovieDetailFragment.newInstance();
 
-        ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
-        fragmentArrayList.add(movieListFragment);
+        fragmentArrayList = new ArrayList<>();
+        fragmentArrayList.add(containerFragment);
         fragmentArrayList.add(favListFragment);
         fragmentArrayList.add(new Fragment());
         fragmentArrayList.add(aboutFragment);
@@ -83,9 +93,21 @@ public class MainActivity extends AppCompatActivity {
 
         binding.viewPager2.setOffscreenPageLimit(1);
 
-        mViewModel.getCastNCrewLiveData().observe(this, movie -> {
-            movieDetailFragment = MovieDetailFragment.newInstance();
-            adapter.replaceFragment(0, movieDetailFragment);
+        mViewModel.getSelectedMovieLiveData().observe(this, movie -> {
+//            adapter.replaceFragment(0, movieDetailFragment);
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+            actionBarDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
+            actionBarDrawerToggle.setToolbarNavigationClickListener(v -> {
+                handleBackPressed();
+            });
+        });
+
+        // Add the OnBackPressedCallback once in onCreate (not inside handleBackPressed)
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackPressed();
+            }
         });
     }
 
@@ -109,5 +131,30 @@ public class MainActivity extends AppCompatActivity {
         mIsGrid = !mIsGrid;
         mViewModel.setIsGrid(mIsGrid);
         return true;
+    }
+
+//    @Override
+//    public boolean onSupportNavigateUp() {
+//        handleBackPressed();
+//        return true;
+//    }
+
+    public void handleBackPressed() {
+        if (binding.viewPager2.getCurrentItem() != 0) {
+            binding.viewPager2.setCurrentItem(0);
+        } else {
+            Fragment currentFragment = containerFragment.getChildFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+
+            if (currentFragment instanceof NavHostFragment) {
+                NavController navController = ((NavHostFragment) currentFragment).getNavController();
+
+                if (navController.getCurrentDestination().getId() == R.id.movie_detail_fragment) {
+                    navController.popBackStack(R.id.movie_list_fragment, false);
+                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+                    return;
+                }
+                finish();
+            }
+        }
     }
 }

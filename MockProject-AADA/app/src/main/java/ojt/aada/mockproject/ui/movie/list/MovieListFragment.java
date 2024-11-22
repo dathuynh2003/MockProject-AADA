@@ -20,12 +20,12 @@ import javax.inject.Inject;
 import ojt.aada.domain.models.Movie;
 import ojt.aada.mockproject.databinding.FragmentMovieListBinding;
 import ojt.aada.mockproject.di.MyApplication;
-import ojt.aada.mockproject.ui.main.MovieViewModel;
+import ojt.aada.mockproject.ui.main.MainViewModel;
 
 public class MovieListFragment extends Fragment {
 
     @Inject
-    MovieViewModel mViewModel;
+    MainViewModel mViewModel;
 
     private FragmentMovieListBinding binding;
     private boolean mIsGrid;
@@ -76,11 +76,6 @@ public class MovieListFragment extends Fragment {
             }
         });
 
-        mMovieListRVAdapter.setOnSelectedItemListener(v -> {
-            Movie movie = (Movie) v.getTag();
-            mViewModel.setSelectedMovieLiveData(movie);
-        });
-
 //        mMovieListRVAdapter.setOnFavClickListener(v -> {
 //            Movie movie = (Movie) v.getTag();
 //            movie.setFavorite(!movie.isFavorite());
@@ -109,6 +104,11 @@ public class MovieListFragment extends Fragment {
                 mMovieListRVAdapter.setLoading(loadState.getAppend() instanceof LoadState.Loading);
             });
             return null;
+        });
+
+        mMovieListRVAdapter.setOnSelectedItemListener(v -> {
+            Movie movie = (Movie) v.getTag();
+            mViewModel.setSelectedMovieLiveData(movie);
         });
 
         binding.movieRv.setLayoutManager(layoutManager);

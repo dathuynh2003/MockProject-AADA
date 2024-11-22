@@ -3,6 +3,7 @@ package ojt.aada.mockproject.di;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import ojt.aada.mockproject.ui.container.ContainerFragment;
 import ojt.aada.mockproject.ui.main.MainActivity;
 import ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment;
 import ojt.aada.mockproject.ui.movie.favoritelist.FavoriteListFragment;
@@ -15,4 +16,5 @@ public interface AppComponent {
     void inject(MovieListFragment fragment);
     void inject(FavoriteListFragment fragment);
     void inject(MovieDetailFragment movieDetailFragment);
+    void inject(ContainerFragment containerFragment);
 }
