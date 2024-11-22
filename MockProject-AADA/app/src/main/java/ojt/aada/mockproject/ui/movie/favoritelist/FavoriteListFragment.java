@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.ui.movie.favoritelist;
+package ojt.aada.mockproject.ui.movie.favoritelist;
 
 import android.os.Bundle;
 
@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import javax.inject.Inject;
 
-import ojt.aada.mockproject_aada.databinding.FragmentFavoriteListBinding;
-import ojt.aada.mockproject_aada.di.MyApplication;
-import ojt.aada.mockproject_aada.ui.main.MovieViewModel;
+import ojt.aada.mockproject.databinding.FragmentFavoriteListBinding;
+import ojt.aada.mockproject.di.MyApplication;
+import ojt.aada.mockproject.ui.main.MovieViewModel;
 
 public class FavoriteListFragment extends Fragment {
 

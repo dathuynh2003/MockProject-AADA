@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.ui.main;
+package ojt.aada.mockproject.ui.main;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,13 +16,13 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import ojt.aada.mockproject_aada.R;
-import ojt.aada.mockproject_aada.databinding.ActivityMainBinding;
-import ojt.aada.mockproject_aada.di.MyApplication;
-import ojt.aada.mockproject_aada.ui.about.AboutFragment;
-import ojt.aada.mockproject_aada.ui.movie.detail.MovieDetailFragment;
-import ojt.aada.mockproject_aada.ui.movie.favoritelist.FavoriteListFragment;
-import ojt.aada.mockproject_aada.ui.movie.list.MovieListFragment;
+import ojt.aada.mockproject.R;
+import ojt.aada.mockproject.databinding.ActivityMainBinding;
+import ojt.aada.mockproject.di.MyApplication;
+import ojt.aada.mockproject.ui.about.AboutFragment;
+import ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment;
+import ojt.aada.mockproject.ui.movie.favoritelist.FavoriteListFragment;
+import ojt.aada.mockproject.ui.movie.list.MovieListFragment;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
     <data>
-        <import type="ojt.aada.mockproject_aada.utils.FunctionUtils"/>
+        <import type="ojt.aada.mockproject.utils.FunctionUtils"/>
         <variable
             name="detail"
             type="ojt.aada.domain.models.Movie" />

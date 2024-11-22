@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/movie_list_fragment">
+
+    <fragment
+        android:id="@+id/movie_list_fragment"
+        android:name="ojt.aada.mockproject.ui.movie.list.MovieListFragment"
+        android:label="fragment_movie_list"
+        tools:layout="@layout/fragment_movie_list" >
+        <action
+            android:id="@+id/action_movieListFragment_to_movieDetailFragment"
+            app:destination="@id/movie_detail_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/movie_detail_fragment"
+        android:name="ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment"
+        android:label="MovieDetailFragment" />
+</navigation>

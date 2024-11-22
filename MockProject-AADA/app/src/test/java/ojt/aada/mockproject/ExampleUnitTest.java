@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada;
+package ojt.aada.mockproject;
 
 import org.junit.Test;
 

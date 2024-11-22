@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.di;
+package ojt.aada.mockproject.di;
 
 import android.app.Application;
 

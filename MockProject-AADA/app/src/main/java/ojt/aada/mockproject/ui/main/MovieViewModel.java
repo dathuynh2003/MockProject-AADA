@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.ui.main;
+package ojt.aada.mockproject.ui.main;
 
 import android.util.Log;
 

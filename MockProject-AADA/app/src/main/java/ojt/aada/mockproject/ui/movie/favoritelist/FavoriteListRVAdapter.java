@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.ui.movie.favoritelist;
+package ojt.aada.mockproject.ui.movie.favoritelist;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import ojt.aada.domain.models.Movie;
-import ojt.aada.mockproject_aada.R;
-import ojt.aada.mockproject_aada.databinding.MovieListItemViewBinding;
+import ojt.aada.mockproject.R;
+import ojt.aada.mockproject.databinding.MovieListItemViewBinding;
 
 public class FavoriteListRVAdapter extends ListAdapter<Movie, FavoriteListRVAdapter.MovieListViewHolder> {
     public static final String BASE_IMG_URL = "https://image.tmdb.org/t/p/original";

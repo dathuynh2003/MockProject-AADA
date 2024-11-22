@@ -1,6 +1,6 @@
-package ojt.aada.mockproject_aada.utils;
+package ojt.aada.mockproject.utils;
 
-import ojt.aada.mockproject_aada.R;
+import ojt.aada.mockproject.R;
 
 public class FunctionUtils {
     public static int displayStar(boolean isFavorite) {

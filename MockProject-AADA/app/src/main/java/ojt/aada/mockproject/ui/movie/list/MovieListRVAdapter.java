@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.ui.movie.list;
+package ojt.aada.mockproject.ui.movie.list;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +15,9 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ojt.aada.domain.models.Movie;
-import ojt.aada.mockproject_aada.R;
-import ojt.aada.mockproject_aada.databinding.MovieGridItemViewBinding;
-import ojt.aada.mockproject_aada.databinding.MovieListItemViewBinding;
+import ojt.aada.mockproject.R;
+import ojt.aada.mockproject.databinding.MovieGridItemViewBinding;
+import ojt.aada.mockproject.databinding.MovieListItemViewBinding;
 
 public class MovieListRVAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHolder> {
 

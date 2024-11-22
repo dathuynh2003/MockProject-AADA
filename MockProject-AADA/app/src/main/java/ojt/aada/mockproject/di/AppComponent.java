@@ -1,12 +1,12 @@
-package ojt.aada.mockproject_aada.di;
+package ojt.aada.mockproject.di;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
-import ojt.aada.mockproject_aada.ui.main.MainActivity;
-import ojt.aada.mockproject_aada.ui.movie.detail.MovieDetailFragment;
-import ojt.aada.mockproject_aada.ui.movie.favoritelist.FavoriteListFragment;
-import ojt.aada.mockproject_aada.ui.movie.list.MovieListFragment;
+import ojt.aada.mockproject.ui.main.MainActivity;
+import ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment;
+import ojt.aada.mockproject.ui.movie.favoritelist.FavoriteListFragment;
+import ojt.aada.mockproject.ui.movie.list.MovieListFragment;
 
 @Singleton
 @Component(modules = {NetworkModule.class, AppModule.class})

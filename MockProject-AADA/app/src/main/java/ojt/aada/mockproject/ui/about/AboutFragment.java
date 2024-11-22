@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.ui.about;
+package ojt.aada.mockproject.ui.about;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import ojt.aada.mockproject_aada.R;
+import ojt.aada.mockproject.R;
 
 public class AboutFragment extends Fragment {
     private static String ABOUT_URL = "https://www.themoviedb.org/about/our-history";

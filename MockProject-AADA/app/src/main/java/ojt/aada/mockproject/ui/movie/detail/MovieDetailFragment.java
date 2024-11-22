@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.ui.movie.detail;
+package ojt.aada.mockproject.ui.movie.detail;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,10 +14,10 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import ojt.aada.mockproject_aada.R;
-import ojt.aada.mockproject_aada.databinding.FragmentMovieDetailBinding;
-import ojt.aada.mockproject_aada.di.MyApplication;
-import ojt.aada.mockproject_aada.ui.main.MovieViewModel;
+import ojt.aada.mockproject.R;
+import ojt.aada.mockproject.databinding.FragmentMovieDetailBinding;
+import ojt.aada.mockproject.di.MyApplication;
+import ojt.aada.mockproject.ui.main.MovieViewModel;
 
 /**
  * A simple {@link Fragment} subclass.

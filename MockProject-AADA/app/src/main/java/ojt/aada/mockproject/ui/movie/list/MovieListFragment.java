@@ -1,4 +1,4 @@
-package ojt.aada.mockproject_aada.ui.movie.list;
+package ojt.aada.mockproject.ui.movie.list;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,9 +18,9 @@ import android.view.ViewGroup;
 import javax.inject.Inject;
 
 import ojt.aada.domain.models.Movie;
-import ojt.aada.mockproject_aada.databinding.FragmentMovieListBinding;
-import ojt.aada.mockproject_aada.di.MyApplication;
-import ojt.aada.mockproject_aada.ui.main.MovieViewModel;
+import ojt.aada.mockproject.databinding.FragmentMovieListBinding;
+import ojt.aada.mockproject.di.MyApplication;
+import ojt.aada.mockproject.ui.main.MovieViewModel;
 
 public class MovieListFragment extends Fragment {
 
