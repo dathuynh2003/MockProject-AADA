@@ -58,7 +58,7 @@ public class MovieRemoteDataSource extends RxPagingSource<Integer, Movie> {
                     favMovies.forEach(favMovie -> {
                         mMovieList.forEach(movie1 -> {
                             if (movie1.getId() == favMovie.getId()) {
-                                movie1.setFavorite(true);
+                                movie1.setFavorite(favMovie.isFavorite());
                             }
                         });
                     });

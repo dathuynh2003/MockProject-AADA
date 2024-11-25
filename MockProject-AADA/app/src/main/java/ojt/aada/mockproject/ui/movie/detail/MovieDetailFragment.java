@@ -19,7 +19,7 @@ import ojt.aada.domain.models.Movie;
 import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.FragmentMovieDetailBinding;
 import ojt.aada.mockproject.di.MyApplication;
-import ojt.aada.mockproject.ui.main.MainViewModel;
+import ojt.aada.mockproject.ui.MainViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,8 +64,8 @@ public class MovieDetailFragment extends Fragment {
         binding.castNCrewRecyclerView.setAdapter(adapter);
 
         mViewModel.getSelectedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
+            if (movie == null) return;
             binding.setDetail(movie);
-            Log.d("TAG", "onCreateView: " +movie.isFavorite());
             Picasso.get().load(BASE_IMG_URL.concat(movie.getPosterPath()))
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.error_image_black_24)
@@ -83,7 +83,7 @@ public class MovieDetailFragment extends Fragment {
             Movie movie = binding.getDetail();
             movie.setFavorite(!movie.isFavorite());
             mViewModel.updateMovie(binding.getDetail());
-            //binding again to update the UI
+
             binding.setDetail(movie);
         });
 

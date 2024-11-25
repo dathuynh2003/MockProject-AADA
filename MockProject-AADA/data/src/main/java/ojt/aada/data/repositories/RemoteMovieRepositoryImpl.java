@@ -28,11 +28,11 @@ public class RemoteMovieRepositoryImpl implements RemoteMovieRepository {
 
     private MovieRemoteDataSource movieRemoteDataSource;
     private final PagingConfig pagingConfig = new PagingConfig(
-            20,
             10,
+            5,
             false,
-            10,
-            20 + 2 * 10
+            20,
+            10 + 2 * 5
     );
 
     //Constructor

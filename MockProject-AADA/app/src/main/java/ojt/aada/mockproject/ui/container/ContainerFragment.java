@@ -17,7 +17,7 @@ import javax.inject.Inject;
 
 import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.di.MyApplication;
-import ojt.aada.mockproject.ui.main.MainViewModel;
+import ojt.aada.mockproject.ui.MainViewModel;
 
 public class ContainerFragment extends Fragment {
 
@@ -51,7 +51,7 @@ public class ContainerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_container, container, false);
 
-        NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+        NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.nav_host_fragment_content_tab);
         if (navHostFragment != null) {
             navController = navHostFragment.getNavController();
         } else {
@@ -59,8 +59,9 @@ public class ContainerFragment extends Fragment {
         }
 
         mViewModel.getSelectedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
-            if (movie != null) {
-                navController.navigate(R.id.action_movieListFragment_to_movieDetailFragment);
+            if (movie != null && navController.getCurrentDestination() != null &&
+                    navController.getCurrentDestination().getId() == R.id.movie_list_fragment) {
+                 navController.navigate(R.id.action_movieListFragment_to_movieDetailFragment);
             }
         });
 

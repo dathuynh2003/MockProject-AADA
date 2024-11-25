@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import ojt.aada.domain.models.Movie;
 import ojt.aada.mockproject.databinding.FragmentMovieListBinding;
 import ojt.aada.mockproject.di.MyApplication;
-import ojt.aada.mockproject.ui.main.MainViewModel;
+import ojt.aada.mockproject.ui.MainViewModel;
 
 public class MovieListFragment extends Fragment {
 
@@ -61,6 +61,7 @@ public class MovieListFragment extends Fragment {
 
         setupRecyclerView(mIsGrid);
 
+        //  Observe the remote movie list from the view model and update the recycler view
         mViewModel.getRemoteMovieList().observe(getViewLifecycleOwner(), movies -> {
             this.movies = movies;
             mMovieListRVAdapter.submitData(getLifecycle(), movies);
@@ -69,6 +70,7 @@ public class MovieListFragment extends Fragment {
         });
 
 
+        //  Observe the isGrid value from the view model and update the recycler view layout
         mViewModel.getIsGrid().observe(getViewLifecycleOwner(), isGrid -> {
             setupRecyclerView(isGrid);
             if (movies != null) {
@@ -76,16 +78,17 @@ public class MovieListFragment extends Fragment {
             }
         });
 
-        mMovieListRVAdapter.setOnFavClickListener(v -> {
-            Movie movie = (Movie) v.getTag();
-            movie.setFavorite(!movie.isFavorite());
-            mViewModel.updateMovie(movie);
-            int position = mMovieListRVAdapter.getCurrentList().indexOf(movie);
-            if (position != -1) {
-                mMovieListRVAdapter.notifyItemChanged(position);
+        //  Observe the updated movie from the view model and update the item in the recycler view
+        mViewModel.getUpdatedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
+//            int position = mMovieListRVAdapter.getCurrentList().indexOf(movie);
+            for (int i = 0; i < mMovieListRVAdapter.getCurrentList().size(); i++) {
+                if (mMovieListRVAdapter.getCurrentList().get(i).getId() == movie.getId()) {
+                    mMovieListRVAdapter.getCurrentList().get(i).setFavorite(movie.isFavorite());
+                    mMovieListRVAdapter.notifyItemChanged(i);
+                    break;
+                }
             }
         });
-
 
         return binding.getRoot();
     }
@@ -106,9 +109,17 @@ public class MovieListFragment extends Fragment {
             return null;
         });
 
+        //  Set the onSelectedItemListener to the recycler view adapter
         mMovieListRVAdapter.setOnSelectedItemListener(v -> {
             Movie movie = (Movie) v.getTag();
             mViewModel.setSelectedMovieLiveData(movie);
+        });
+
+        //  Set the onFavClickListener to the recycler view adapter
+        mMovieListRVAdapter.setOnFavClickListener(v -> {
+            Movie movie = (Movie) v.getTag();
+            movie.setFavorite(!movie.isFavorite());
+            mViewModel.updateMovie(movie);
         });
 
         binding.movieRv.setLayoutManager(layoutManager);

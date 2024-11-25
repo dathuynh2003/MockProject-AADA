@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import ojt.aada.domain.models.Movie;
 import ojt.aada.mockproject.databinding.FragmentFavoriteListBinding;
 import ojt.aada.mockproject.di.MyApplication;
-import ojt.aada.mockproject.ui.main.MainViewModel;
+import ojt.aada.mockproject.ui.MainViewModel;
 
 public class FavoriteListFragment extends Fragment {
 
@@ -65,6 +65,7 @@ public class FavoriteListFragment extends Fragment {
             Movie movie = (Movie) v.getTag();
             movie.setFavorite(!movie.isFavorite());
             mViewModel.updateMovie(movie); // Update ViewModel
+//            mViewModel.setSelectedMovieLiveData(movie); // Update ViewModel
         });
 
         return binding.getRoot();

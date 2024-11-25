@@ -1,6 +1,7 @@
-package ojt.aada.mockproject.ui.main;
+package ojt.aada.mockproject.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,12 +12,12 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -25,9 +26,9 @@ import ojt.aada.mockproject.databinding.ActivityMainBinding;
 import ojt.aada.mockproject.di.MyApplication;
 import ojt.aada.mockproject.ui.about.AboutFragment;
 import ojt.aada.mockproject.ui.container.ContainerFragment;
+import ojt.aada.mockproject.ui.main.ViewPagerStateAdapter;
 import ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment;
 import ojt.aada.mockproject.ui.movie.favoritelist.FavoriteListFragment;
-import ojt.aada.mockproject.ui.movie.list.MovieListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,11 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean mIsGrid;
     @Inject
     MainViewModel mViewModel;
-    private ContainerFragment containerFragment;
-    //    private MovieListFragment movieListFragment;
-    private FavoriteListFragment favListFragment;
-    private AboutFragment aboutFragment;
-    private MovieDetailFragment movieDetailFragment;
 
     private ArrayList<Fragment> fragmentArrayList;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -54,47 +50,17 @@ public class MainActivity extends AppCompatActivity {
 
         mIsGrid = Boolean.TRUE.equals(mViewModel.getIsGrid().getValue());
 
-        setSupportActionBar(binding.toolBar);
+        setSupportActionBar(binding.appBarMain.toolBar);
 
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.getRoot(), binding.toolBar, R.string.nav_open, R.string.nav_close);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.getRoot(), binding.appBarMain.toolBar, R.string.nav_open, R.string.nav_close);
         binding.getRoot().addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-
-//        movieListFragment = MovieListFragment.newInstance();
-        containerFragment = ContainerFragment.newInstance();
-        favListFragment = FavoriteListFragment.newInstance();
-        aboutFragment = AboutFragment.newInstance();
-        movieDetailFragment = MovieDetailFragment.newInstance();
-
-        fragmentArrayList = new ArrayList<>();
-        fragmentArrayList.add(containerFragment);
-        fragmentArrayList.add(favListFragment);
-        fragmentArrayList.add(new Fragment());
-        fragmentArrayList.add(aboutFragment);
-        ViewPagerStateAdapter adapter = new ViewPagerStateAdapter(this, fragmentArrayList);
-        binding.viewPager2.setAdapter(adapter);
-
-        ArrayList<String> titleArrayList = new ArrayList<>();
-        titleArrayList.add("Movies");
-        titleArrayList.add("Favourite");
-        titleArrayList.add("Settings");
-        titleArrayList.add("About");
-        ArrayList<Integer> iconArrayList = new ArrayList<>();
-        iconArrayList.add(R.drawable.ic_home_24dp);
-        iconArrayList.add(R.drawable.ic_favorite_24dp);
-        iconArrayList.add(R.drawable.ic_settings_24dp);
-        iconArrayList.add(R.drawable.ic_info_24dp);
-        new TabLayoutMediator(binding.tabLayout, binding.viewPager2,
-                (tab, pos) -> {
-                    tab.setText(titleArrayList.get(pos));
-                    tab.setIcon(iconArrayList.get(pos));
-                }).attach();
-
-        binding.viewPager2.setOffscreenPageLimit(1);
-
         mViewModel.getSelectedMovieLiveData().observe(this, movie -> {
 //            adapter.replaceFragment(0, movieDetailFragment);
+            if (movie == null) {
+                return;
+            }
             actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
             actionBarDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
             actionBarDrawerToggle.setToolbarNavigationClickListener(v -> {
@@ -133,29 +99,28 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        handleBackPressed();
-//        return true;
-//    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        handleBackPressed();
+        return true;
+    }
+
 
     public void handleBackPressed() {
-        if (binding.viewPager2.getCurrentItem() != 0) {
-            binding.viewPager2.setCurrentItem(0);
-        } else {
-            Fragment currentFragment = containerFragment.getChildFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
-
-            if (currentFragment instanceof NavHostFragment) {
-                NavController navController = ((NavHostFragment) currentFragment).getNavController();
-
-                if (navController.getCurrentDestination().getId() == R.id.movie_detail_fragment) {
-                    navController.popBackStack(R.id.movie_list_fragment, false);
-                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-                    return;
-                }
-                finish();
-//                moveTaskToBack(true);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        if (mViewModel.getCurrentPageLiveData().getValue() == 0) {
+            NavController navTabController = Navigation.findNavController(this, R.id.nav_host_fragment_content_tab);
+            if (navTabController.getCurrentDestination().getId() == R.id.movie_detail_fragment) {
+                navTabController.popBackStack(R.id.movie_list_fragment, false);
+                actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+                mViewModel.setSelectedMovieLiveData(null);
+                return;
             }
         }
+
+        //Before finish, set selected movie to null
+        mViewModel.setSelectedMovieLiveData(null);
+        finish();
+//        getOnBackPressedDispatcher().onBackPressed();
     }
 }

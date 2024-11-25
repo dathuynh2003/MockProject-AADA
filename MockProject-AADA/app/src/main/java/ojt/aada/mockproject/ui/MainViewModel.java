@@ -1,4 +1,4 @@
-package ojt.aada.mockproject.ui.main;
+package ojt.aada.mockproject.ui;
 
 import android.util.Log;
 
@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
+import androidx.paging.PagingDataTransforms;
+import androidx.paging.rxjava2.PagingRx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,10 @@ import ojt.aada.domain.usecase.UpdateFavMovieUseCase;
 public class MainViewModel extends ViewModel {
     private final MutableLiveData<PagingData<Movie>> mMovieListLiveData;
     private LiveData<List<Movie>> mFavoriteMoviesLiveData;
-    private final MutableLiveData<Movie> mSelectedMovieLiveData;
+    private MutableLiveData<Movie> mSelectedMovieLiveData;
     private final MutableLiveData<ArrayList<CastnCrew>> mCastNCrewLiveData;
+    private final MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Movie> mUpdatedMovieLiveData = new MutableLiveData<>();
 
     private MutableLiveData<Boolean> mIsGrid = new MutableLiveData<>();
     private final CompositeDisposable mCompositeDisposable;
@@ -76,7 +80,12 @@ public class MainViewModel extends ViewModel {
 
     // Get/Set mMovieDetailLiveData
     public void setSelectedMovieLiveData(Movie movie) {
+        if (movie == null) {
+            mSelectedMovieLiveData.setValue(null);
+            return;
+        }
         mSelectedMovieLiveData.setValue(movie);     //Nearly like setter for mSelectedMovieLiveData
+
         Disposable disposable = mGetCastNCrewUseCase.getCastNCrewFromAPI(movie)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -86,6 +95,7 @@ public class MainViewModel extends ViewModel {
                 );
         mCompositeDisposable.add(disposable);
     }
+
     public MutableLiveData<Movie> getSelectedMovieLiveData() {
         return mSelectedMovieLiveData;
     }
@@ -108,14 +118,33 @@ public class MainViewModel extends ViewModel {
     public void updateMovie(Movie movie) {
         mUpdateFavMovieUseCase.updateFavMovie(movie);
         // Update the movie list
-        getRemoteMovieList(); // Reload the data
+        mUpdatedMovieLiveData.setValue(movie);
+//        getRemoteMovieList(); // Reload the data
     }
+
 
     public LiveData<List<Movie>> getFavoriteMovies() {
         if (mFavoriteMoviesLiveData == null) {
             mFavoriteMoviesLiveData = mGetFavMoviesUseCase.getFavoriteMovies();
         }
         return mFavoriteMoviesLiveData;
+    }
+
+    // Current Page in ViewPager2
+    public LiveData<Integer> getCurrentPageLiveData() {
+        return currentPageLiveData;
+    }
+
+    public void setCurrentPageLiveData(int page) {
+        currentPageLiveData.setValue(page);
+    }
+
+    /**
+     * Get the updated movie
+     * @return MutableLiveData<Movie>
+     */
+    public MutableLiveData<Movie> getUpdatedMovieLiveData() {
+        return mUpdatedMovieLiveData;
     }
 
 }

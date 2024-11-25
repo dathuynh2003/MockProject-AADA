@@ -1,5 +1,7 @@
 package ojt.aada.domain.usecase;
 
+import android.util.Log;
+
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -26,12 +28,28 @@ public class UpdateFavMovieUseCase {
             disposable = localMovieRepository.insertFavMovie(movie)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe();
+                    .subscribe(
+                            () -> {
+                                // Handle success
+                            },
+                            throwable -> {
+                                // Handle error
+                                Log.e("UpdateFavMovieUseCase", "Error inserting favorite movie", throwable);
+                            }
+                    );
         } else {
             disposable = localMovieRepository.deleteFavMovie(movie)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe();
+                    .subscribe(
+                            () -> {
+                                // Handle success
+                            },
+                            throwable -> {
+                                // Handle error
+                                Log.e("UpdateFavMovieUseCase", "Error deleting favorite movie", throwable);
+                            }
+                    );
         }
 
         mCompositeDisposable.add(disposable);

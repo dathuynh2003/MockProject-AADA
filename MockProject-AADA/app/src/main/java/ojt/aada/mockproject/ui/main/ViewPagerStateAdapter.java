@@ -21,33 +21,33 @@ public class ViewPagerStateAdapter extends FragmentStateAdapter {
         return fragmentArrayList.get(position);
     }
 
-    @Override
-    public long getItemId(int position) {
-        return getIDForFragment(fragmentArrayList.get(position));
-    }
-
-    @Override
-    public boolean containsItem(long itemId) {
-        for (Fragment fragment : fragmentArrayList) {
-            if (getIDForFragment(fragment) == itemId)
-                return true;
-        }
-        return false;
-    }
+//    @Override
+//    public long getItemId(int position) {
+//        return getIDForFragment(fragmentArrayList.get(position));
+//    }
+//
+//    @Override
+//    public boolean containsItem(long itemId) {
+//        for (Fragment fragment : fragmentArrayList) {
+//            if (getIDForFragment(fragment) == itemId)
+//                return true;
+//        }
+//        return false;
+//    }
 
     @Override
     public int getItemCount() {
         return fragmentArrayList.size();
     }
 
-    public void replaceFragment(int position, Fragment fragment) {
-        fragmentArrayList.set(position, fragment);
-        notifyItemChanged(position);
-    }
-
-    private long getIDForFragment(Fragment fragment)
-    {
-        return fragment.hashCode();
-    }
+//    public void replaceFragment(int position, Fragment fragment) {
+//        fragmentArrayList.set(position, fragment);
+//        notifyItemChanged(position);
+//    }
+//
+//    private long getIDForFragment(Fragment fragment)
+//    {
+//        return fragment.hashCode();
+//    }
 
 }
