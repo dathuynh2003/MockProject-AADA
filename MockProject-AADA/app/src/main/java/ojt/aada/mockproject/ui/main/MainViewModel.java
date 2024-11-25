@@ -21,8 +21,10 @@ import io.reactivex.schedulers.Schedulers;
 import ojt.aada.domain.models.CastnCrew;
 import ojt.aada.domain.models.Movie;
 import ojt.aada.domain.usecase.GetCastNCrewUseCase;
+import ojt.aada.domain.usecase.GetFavMoviesUseCase;
 import ojt.aada.domain.usecase.GetMovieDetailUseCase;
 import ojt.aada.domain.usecase.GetMoviesUseCase;
+import ojt.aada.domain.usecase.UpdateFavMovieUseCase;
 
 @Singleton
 public class MainViewModel extends ViewModel {
@@ -36,13 +38,22 @@ public class MainViewModel extends ViewModel {
     private final GetMoviesUseCase mGetMoviesUseCase;
     private final GetMovieDetailUseCase mGetMovieDetailUseCase;
     private final GetCastNCrewUseCase mGetCastNCrewUseCase;
+    private final GetFavMoviesUseCase mGetFavMoviesUseCase;
+    private final UpdateFavMovieUseCase mUpdateFavMovieUseCase;
 
     @Inject
-    public MainViewModel(GetMoviesUseCase getMoviesUseCase, GetMovieDetailUseCase getMovieDetailUseCase, GetCastNCrewUseCase getCastNCrewUseCase) {
+    public MainViewModel(GetMoviesUseCase getMoviesUseCase,
+                         GetMovieDetailUseCase getMovieDetailUseCase,
+                         GetCastNCrewUseCase getCastNCrewUseCase,
+                         GetFavMoviesUseCase getFavMoviesUseCase,
+                         UpdateFavMovieUseCase updateFavMovieUseCase) {
+
         mGetMoviesUseCase = getMoviesUseCase;
         mCompositeDisposable = new CompositeDisposable();
         mGetMovieDetailUseCase = getMovieDetailUseCase;
         mGetCastNCrewUseCase = getCastNCrewUseCase;
+        mGetFavMoviesUseCase = getFavMoviesUseCase;
+        mUpdateFavMovieUseCase = updateFavMovieUseCase;
 
         mMovieListLiveData = new MutableLiveData<>();
         mSelectedMovieLiveData = new MutableLiveData<>();
@@ -94,17 +105,17 @@ public class MainViewModel extends ViewModel {
         mIsGrid.setValue(isGrid);
     }
 
-//    public void updateMovie(Movie movie) {
-//        mGetMoviesUseCase.updateMovie(movie);
-//        // Update the movie list
-//        getMovieList(); // Reload the data
-//    }
+    public void updateMovie(Movie movie) {
+        mUpdateFavMovieUseCase.updateFavMovie(movie);
+        // Update the movie list
+        getRemoteMovieList(); // Reload the data
+    }
 
-//    public LiveData<List<Movie>> getFavoriteMovies() {
-//        if (mFavoriteMoviesLiveData == null) {
-//            mFavoriteMoviesLiveData = mGetMoviesUseCase.getFavMovies();
-//        }
-//        return mFavoriteMoviesLiveData;
-//    }
+    public LiveData<List<Movie>> getFavoriteMovies() {
+        if (mFavoriteMoviesLiveData == null) {
+            mFavoriteMoviesLiveData = mGetFavMoviesUseCase.getFavoriteMovies();
+        }
+        return mFavoriteMoviesLiveData;
+    }
 
 }

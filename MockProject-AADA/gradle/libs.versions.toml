@@ -20,6 +20,7 @@ activity = "1.9.3"
 constraintlayout = "2.2.0"
 
 [libraries]
+androidx-room-rxjava2 = { module = "androidx.room:room-rxjava2", version.ref = "roomPaging" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }

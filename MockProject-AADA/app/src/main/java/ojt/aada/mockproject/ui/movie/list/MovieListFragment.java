@@ -76,15 +76,15 @@ public class MovieListFragment extends Fragment {
             }
         });
 
-//        mMovieListRVAdapter.setOnFavClickListener(v -> {
-//            Movie movie = (Movie) v.getTag();
-//            movie.setFavorite(!movie.isFavorite());
-//            mViewModel.updateMovie(movie);
-//            int position = mMovieListRVAdapter.getCurrentList().indexOf(movie);
-//            if (position != -1) {
-//                mMovieListRVAdapter.notifyItemChanged(position);
-//            }
-//        });
+        mMovieListRVAdapter.setOnFavClickListener(v -> {
+            Movie movie = (Movie) v.getTag();
+            movie.setFavorite(!movie.isFavorite());
+            mViewModel.updateMovie(movie);
+            int position = mMovieListRVAdapter.getCurrentList().indexOf(movie);
+            if (position != -1) {
+                mMovieListRVAdapter.notifyItemChanged(position);
+            }
+        });
 
 
         return binding.getRoot();

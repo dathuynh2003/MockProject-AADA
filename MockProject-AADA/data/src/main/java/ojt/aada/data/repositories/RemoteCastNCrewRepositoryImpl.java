@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import io.reactivex.Single;
-import ojt.aada.data.datasource.remote.CastNCrewRemoteDataSource;
+import ojt.aada.data.datasource.remote.datasouces.CastNCrewRemoteDataSource;
 import ojt.aada.domain.models.CastnCrew;
 import ojt.aada.domain.models.Movie;
 import ojt.aada.domain.repositories.RemoteCastNCrewRepository;

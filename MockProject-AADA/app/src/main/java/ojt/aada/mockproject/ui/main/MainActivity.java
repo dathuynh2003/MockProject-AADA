@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 finish();
+//                moveTaskToBack(true);
             }
         }
     }

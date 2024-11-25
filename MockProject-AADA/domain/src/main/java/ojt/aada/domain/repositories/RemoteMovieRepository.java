@@ -3,6 +3,8 @@ package ojt.aada.domain.repositories;
 import androidx.lifecycle.LiveData;
 import androidx.paging.PagingData;
 
+import java.util.List;
+
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import kotlinx.coroutines.CoroutineScope;
@@ -12,5 +14,4 @@ public interface RemoteMovieRepository {
     Flowable<PagingData<Movie>> getMoviesFromAPI(CoroutineScope viewModelScope);
 
     Single<Movie> getMovieDetail(Movie movie);
-
 }

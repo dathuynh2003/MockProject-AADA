@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import javax.inject.Inject;
 
+import ojt.aada.domain.models.Movie;
 import ojt.aada.mockproject.databinding.FragmentFavoriteListBinding;
 import ojt.aada.mockproject.di.MyApplication;
 import ojt.aada.mockproject.ui.main.MainViewModel;
@@ -56,19 +57,15 @@ public class FavoriteListFragment extends Fragment {
         binding.favMovieRv.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.favMovieRv.setAdapter(mFavoriteListRVAdapter);
 
-//        mViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movies -> {
-//            mFavoriteListRVAdapter.submitList(movies);
-//        });
+        mViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movies -> {
+            mFavoriteListRVAdapter.submitList(movies);
+        });
 
-//        mFavoriteListRVAdapter.setOnFavClickListener(v -> {
-//            Movie movie = (Movie) v.getTag();
-//            movie.setFavorite(!movie.isFavorite());
-//            mViewModel.updateMovie(movie); // Update ViewModel
-//            int pos = mFavoriteListRVAdapter.getCurrentList().indexOf(movie);
-//            if (pos != -1) {
-//                mFavoriteListRVAdapter.notifyItemChanged(pos);
-//            }
-//        });
+        mFavoriteListRVAdapter.setOnFavClickListener(v -> {
+            Movie movie = (Movie) v.getTag();
+            movie.setFavorite(!movie.isFavorite());
+            mViewModel.updateMovie(movie); // Update ViewModel
+        });
 
         return binding.getRoot();
     }
