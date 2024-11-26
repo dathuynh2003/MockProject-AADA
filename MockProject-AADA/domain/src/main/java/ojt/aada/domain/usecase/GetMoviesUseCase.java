@@ -20,8 +20,8 @@ public class GetMoviesUseCase {
         mRemoteMovieRepository = remoteMovieRepository;
     }
 
-    public Flowable<PagingData<Movie>> getMovies(CoroutineScope viewModelScope) {
-        return mRemoteMovieRepository.getMoviesFromAPI(viewModelScope);
+    public Flowable<PagingData<Movie>> getMovies(CoroutineScope viewModelScope, String category, String sortBy, int rating, int releaseYear) {
+        return mRemoteMovieRepository.getMoviesFromAPI(viewModelScope, category, sortBy, rating, releaseYear);
     }
 
 }

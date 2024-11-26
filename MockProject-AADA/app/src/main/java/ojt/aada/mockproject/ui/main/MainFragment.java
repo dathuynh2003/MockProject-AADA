@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import ojt.aada.mockproject.ui.about.AboutFragment;
 import ojt.aada.mockproject.ui.container.ContainerFragment;
 import ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment;
 import ojt.aada.mockproject.ui.movie.favoritelist.FavoriteListFragment;
+import ojt.aada.mockproject.ui.settings.SettingsFragment;
 
 public class MainFragment extends Fragment {
 
@@ -39,6 +41,7 @@ public class MainFragment extends Fragment {
     private ContainerFragment mContainerFragment;
     //    private MovieListFragment mMovieListFragment;
     private FavoriteListFragment mFavListFragment;
+    private SettingsFragment mSettingsFragment;
     private AboutFragment mAboutFragment;
     private MovieDetailFragment mMovieDetailFragment;
 
@@ -71,13 +74,14 @@ public class MainFragment extends Fragment {
 
         mContainerFragment = ContainerFragment.newInstance();
         mFavListFragment = FavoriteListFragment.newInstance();
+        mSettingsFragment = SettingsFragment.newInstance();
         mAboutFragment = AboutFragment.newInstance();
         mMovieDetailFragment = MovieDetailFragment.newInstance();
 
         fragmentArrayList = new ArrayList<>();
         fragmentArrayList.add(mContainerFragment);
         fragmentArrayList.add(mFavListFragment);
-        fragmentArrayList.add(new Fragment());
+        fragmentArrayList.add(mSettingsFragment);
         fragmentArrayList.add(mAboutFragment);
 
         mViewPagerStateAdapter = new ViewPagerStateAdapter(requireActivity(), fragmentArrayList);
@@ -111,9 +115,29 @@ public class MainFragment extends Fragment {
             }
         });
 
+        mViewModel.getSelectedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
+            if (movie == null) {
+                return;
+            }
+            binding.viewPager2.setCurrentItem(0);
+        });
+
+        mViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movies -> {
+            updateFavouriteBadge(movies.size());
+        });
+
         return binding.getRoot();
     }
 
-
+    private void updateFavouriteBadge(int count) {
+        BadgeDrawable badgeDrawable = binding.tabLayout.getTabAt(1).getOrCreateBadge();
+        badgeDrawable.setVisible(true);
+        String countStr = (count > 99) ? "99+" : String.valueOf(count);
+        if (count > 0) {
+            badgeDrawable.setText(countStr);
+        } else {
+            badgeDrawable.setVisible(false);
+        }
+    }
 
 }

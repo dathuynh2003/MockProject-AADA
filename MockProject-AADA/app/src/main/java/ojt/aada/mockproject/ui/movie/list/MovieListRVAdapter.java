@@ -18,13 +18,13 @@ import ojt.aada.domain.models.Movie;
 import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.MovieGridItemViewBinding;
 import ojt.aada.mockproject.databinding.MovieListItemViewBinding;
+import ojt.aada.mockproject.utils.Constants;
 
 public class MovieListRVAdapter extends PagingDataAdapter<Movie, RecyclerView.ViewHolder> {
 
     private static final int TYPE_PROGRESS = 0;
     private static final int TYPE_ITEM = 1;
 
-    public static final String BASE_IMG_URL = "https://image.tmdb.org/t/p/original";
     private boolean isGrid = false;
     private boolean isLoading = false;
 
@@ -75,14 +75,14 @@ public class MovieListRVAdapter extends PagingDataAdapter<Movie, RecyclerView.Vi
         if (isGrid) {
             MovieGridViewHolder viewHolder = (MovieGridViewHolder) holder;
             viewHolder.itemViewBinding.setMovie(movie);
-            Picasso.get().load(BASE_IMG_URL.concat(movie.getPosterPath()))
+            Picasso.get().load(Constants.BASE_IMG_URL.concat(movie.getPosterPath()))
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.error_image_black_24)
                     .into(viewHolder.itemViewBinding.moviePoster);
         } else {
             MovieListViewHolder viewHolder = (MovieListViewHolder) holder;
             viewHolder.itemBinding.setMovie(movie);
-            Picasso.get().load(BASE_IMG_URL.concat(movie.getPosterPath()))
+            Picasso.get().load(Constants.BASE_IMG_URL.concat(movie.getPosterPath()))
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.error_image_black_24)
                     .into(viewHolder.itemBinding.moviePoster);
@@ -98,7 +98,7 @@ public class MovieListRVAdapter extends PagingDataAdapter<Movie, RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        if (position == getItemCount() - 1) {
+        if (isLoading && position == getItemCount() - 1) {
             return TYPE_PROGRESS;
         } else {
             return TYPE_ITEM;
@@ -154,8 +154,10 @@ public class MovieListRVAdapter extends PagingDataAdapter<Movie, RecyclerView.Vi
 
     public void setLoading(boolean loading) {
         isLoading = loading;
-        notifyItemChanged(getItemCount());
+        notifyItemChanged(getItemCount() - 1);
     }
+
+
 
 
 }

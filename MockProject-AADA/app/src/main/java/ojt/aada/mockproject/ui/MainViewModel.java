@@ -65,15 +65,17 @@ public class MainViewModel extends ViewModel {
     }
 
     // Get/Set mMovieListLiveData
-    public MutableLiveData<PagingData<Movie>> getRemoteMovieList() {
-        Disposable disposable = mGetMoviesUseCase.getMovies(ViewModelKt.getViewModelScope(this))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        mMovieListLiveData::setValue,
-                        throwable -> Log.d("FATAL", "getMoviePagingData: " + throwable)
-                );
-        mCompositeDisposable.add(disposable);
+    public MutableLiveData<PagingData<Movie>> getRemoteMovieList(String category, String sortBy, int rating, int releaseYear) {
+        if (mMovieListLiveData.getValue() == null) {
+            Disposable disposable = mGetMoviesUseCase.getMovies(ViewModelKt.getViewModelScope(this), category, sortBy, rating, releaseYear)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            mMovieListLiveData::setValue,
+                            throwable -> Log.d("FATAL", "getMoviePagingData: " + throwable)
+                    );
+            mCompositeDisposable.add(disposable);
+        }
 
         return mMovieListLiveData;
     }
@@ -85,7 +87,6 @@ public class MainViewModel extends ViewModel {
             return;
         }
         mSelectedMovieLiveData.setValue(movie);     //Nearly like setter for mSelectedMovieLiveData
-
         Disposable disposable = mGetCastNCrewUseCase.getCastNCrewFromAPI(movie)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -115,6 +116,11 @@ public class MainViewModel extends ViewModel {
         mIsGrid.setValue(isGrid);
     }
 
+    /**
+     * Update the movie when the user click on the favorite button
+     *
+     * @param movie
+     */
     public void updateMovie(Movie movie) {
         mUpdateFavMovieUseCase.updateFavMovie(movie);
         // Update the movie list
@@ -141,6 +147,7 @@ public class MainViewModel extends ViewModel {
 
     /**
      * Get the updated movie
+     *
      * @return MutableLiveData<Movie>
      */
     public MutableLiveData<Movie> getUpdatedMovieLiveData() {

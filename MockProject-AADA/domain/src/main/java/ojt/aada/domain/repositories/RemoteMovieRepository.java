@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope;
 import ojt.aada.domain.models.Movie;
 
 public interface RemoteMovieRepository {
-    Flowable<PagingData<Movie>> getMoviesFromAPI(CoroutineScope viewModelScope);
+    Flowable<PagingData<Movie>> getMoviesFromAPI(CoroutineScope viewModelScope, String category, String sortBy, int rating, int releaseYear);
 
     Single<Movie> getMovieDetail(Movie movie);
 }

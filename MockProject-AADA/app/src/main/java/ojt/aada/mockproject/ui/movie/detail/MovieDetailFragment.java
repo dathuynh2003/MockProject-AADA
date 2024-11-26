@@ -79,12 +79,22 @@ public class MovieDetailFragment extends Fragment {
             binding.castNCrewPb.setVisibility(View.GONE);
         });
 
+        // Set the favorite star click listener
+        // This will update the movie favorite status
         binding.favStar.setOnClickListener(v -> {
             Movie movie = binding.getDetail();
             movie.setFavorite(!movie.isFavorite());
             mViewModel.updateMovie(binding.getDetail());
 
-            binding.setDetail(movie);
+            // Update the star icon
+//            binding.setDetail(movie);
+        });
+
+        // Observe the updated movie
+        mViewModel.getUpdatedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
+            if (mViewModel.getSelectedMovieLiveData().getValue().getId() == movie.getId()) {
+                binding.setDetail(movie);
+            }
         });
 
         return binding.getRoot();

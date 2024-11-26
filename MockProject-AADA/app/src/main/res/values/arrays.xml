@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_array">
+        <item>Popular Movies</item>
+        <item>Top Rated Movies</item>
+        <item>Upcoming Movies</item>
+        <item>Now Playing Movies</item>
+    </string-array>
+
+    <string-array name="sort_by_array">
+        <item>Rating</item>
+        <item>Release Date</item>
+    </string-array>
+</resources>

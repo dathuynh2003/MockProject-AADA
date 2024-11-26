@@ -59,8 +59,11 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.getSelectedMovieLiveData().observe(this, movie -> {
 //            adapter.replaceFragment(0, movieDetailFragment);
             if (movie == null) {
+                binding.appBarMain.toolBar.setTitle("Movies");
                 return;
             }
+            binding.appBarMain.toolBar.setTitle(movie.getTitle());
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
             actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
             actionBarDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
             actionBarDrawerToggle.setToolbarNavigationClickListener(v -> {
@@ -73,6 +76,41 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 handleBackPressed();
+            }
+        });
+
+        mViewModel.getCurrentPageLiveData().observe(this, integer -> {
+            switch (integer) {
+                case 0:
+                    if (mViewModel.getSelectedMovieLiveData().getValue() != null) {
+                        // Other tab (1,2,3) move to tab 0 but still display in Detail Fragment
+                        actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+                        binding.appBarMain.toolBar.setTitle(mViewModel.getSelectedMovieLiveData().getValue().getTitle());
+//                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+                    } else {
+                        // Other tab (1,2,3) move to tab 0 was displaying in List Fragment
+                        binding.appBarMain.toolBar.setTitle("Movies");
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(true);
+                    }
+                    break;
+                case 1:
+                    // Move to tab 1
+                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+                    binding.appBarMain.toolBar.setTitle("Favorite");
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+                    break;
+                case 2:
+                    // Move to tab 2
+                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+                    binding.appBarMain.toolBar.setTitle("Settings");
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+                    break;
+                case 3:
+                    // Move to tab 3
+                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+                    binding.appBarMain.toolBar.setTitle("About");
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+                    break;
             }
         });
     }
@@ -108,12 +146,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void handleBackPressed() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        if (mViewModel.getCurrentPageLiveData().getValue() == 0) {
+
+        if (mViewModel.getCurrentPageLiveData().getValue() != null &&
+                mViewModel.getCurrentPageLiveData().getValue() == 0) {
             NavController navTabController = Navigation.findNavController(this, R.id.nav_host_fragment_content_tab);
             if (navTabController.getCurrentDestination().getId() == R.id.movie_detail_fragment) {
                 navTabController.popBackStack(R.id.movie_list_fragment, false);
                 actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
                 mViewModel.setSelectedMovieLiveData(null);
+                binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(true);
                 return;
             }
         }

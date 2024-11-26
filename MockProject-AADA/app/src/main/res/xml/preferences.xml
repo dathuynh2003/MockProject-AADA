@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="Filter"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="Popular Movies"
+            android:dialogTitle="Select a category"
+            android:entries="@array/category_array"
+            android:entryValues="@array/category_array"
+            android:key="category"
+            android:title="Category"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            android:key="rating"
+            android:summary="0"
+            android:title="Rating"
+            app:iconSpaceReserved="false" />
+
+        <EditTextPreference
+            android:defaultValue="1970"
+
+            android:key="release_year"
+            android:summary="Set release year"
+            android:title="Release Year"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Sort By"
+        app:iconSpaceReserved="false">
+        <ListPreference
+            android:defaultValue="Rating"
+            android:dialogTitle="Select a sorting method"
+            android:entries="@array/sort_by_array"
+            android:entryValues="@array/sort_by_array"
+            android:key="sort_by"
+            android:summary="Select a sorting method"
+            android:title="Sort By"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

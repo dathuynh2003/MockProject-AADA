@@ -18,9 +18,14 @@ import ojt.aada.mockproject.databinding.MovieListItemViewBinding;
 public class FavoriteListRVAdapter extends ListAdapter<Movie, FavoriteListRVAdapter.MovieListViewHolder> {
     public static final String BASE_IMG_URL = "https://image.tmdb.org/t/p/original";
     private View.OnClickListener onFavClickListener;
+    private View.OnClickListener onSelectedMovieListener;
 
     public void setOnFavClickListener(View.OnClickListener onFavClickListener) {
         this.onFavClickListener = onFavClickListener;
+    }
+
+    public void setOnSelectedMovieListener(View.OnClickListener onSelectedMovieListener) {
+        this.onSelectedMovieListener = onSelectedMovieListener;
     }
 
 
@@ -58,6 +63,9 @@ public class FavoriteListRVAdapter extends ListAdapter<Movie, FavoriteListRVAdap
 
         holder.itemBinding.favouriteStar.setTag(movie);
         holder.itemBinding.favouriteStar.setOnClickListener(onFavClickListener);
+
+        holder.itemView.setTag(movie);
+        holder.itemView.setOnClickListener(onSelectedMovieListener);
     }
 
     public static class MovieListViewHolder extends RecyclerView.ViewHolder {

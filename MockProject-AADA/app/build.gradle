@@ -36,6 +36,8 @@ android {
 dependencies {
     implementation project(':domain')
     implementation project(':data')
+    //Preference
+    implementation libs.preference
     //Navigation
     implementation libs.navigation.fragment
     implementation libs.navigation.ui

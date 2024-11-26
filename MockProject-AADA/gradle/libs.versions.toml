@@ -1,4 +1,5 @@
 [versions]
+preference = "1.2.1"
 navigationFragment = "2.8.3"
 navigationUi = "2.8.3"
 roomPaging = "2.6.1"
@@ -20,6 +21,7 @@ activity = "1.9.3"
 constraintlayout = "2.2.0"
 
 [libraries]
+preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 androidx-room-rxjava2 = { module = "androidx.room:room-rxjava2", version.ref = "roomPaging" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }

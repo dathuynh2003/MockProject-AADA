@@ -37,12 +37,13 @@ public class RemoteMovieRepositoryImpl implements RemoteMovieRepository {
 
     //Constructor
     @Inject
-    public RemoteMovieRepositoryImpl(MovieRemoteDataSource movieRemoteDataSource, Application application) {
+    public RemoteMovieRepositoryImpl(MovieRemoteDataSource movieRemoteDataSource) {
         this.movieRemoteDataSource = movieRemoteDataSource;
     }
 
     @Override
-    public Flowable<PagingData<Movie>> getMoviesFromAPI(CoroutineScope viewModelScope) {
+    public Flowable<PagingData<Movie>> getMoviesFromAPI(CoroutineScope viewModelScope, String category, String sortBy, int rating, int releaseYear) {
+        movieRemoteDataSource.setParameters(category, sortBy, rating, releaseYear);
         return PagingRx.cachedIn(
                 PagingRx.getFlowable(new Pager<>(pagingConfig, () -> movieRemoteDataSource)),
                 viewModelScope

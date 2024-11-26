@@ -68,6 +68,11 @@ public class FavoriteListFragment extends Fragment {
 //            mViewModel.setSelectedMovieLiveData(movie); // Update ViewModel
         });
 
+        mFavoriteListRVAdapter.setOnSelectedMovieListener(v -> {
+            Movie movie = (Movie) v.getTag();
+            mViewModel.setSelectedMovieLiveData(movie); // Update ViewModel
+        });
+
         return binding.getRoot();
     }
 }
