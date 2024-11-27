@@ -10,6 +10,7 @@ import androidx.paging.rxjava2.RxPagingSource;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -85,8 +86,7 @@ public class MovieRemoteDataSource extends RxPagingSource<Integer, Movie> {
                     mMovieList = response1.getResults();
 
                     //Filter
-                    mMovieList.removeIf(movie -> movie.getRating() < rating);
-                    mMovieList.removeIf(movie -> Integer.parseInt(movie.getReleaseDate().substring(0, 4)) < releaseYear);
+                    mMovieList.removeIf(movie -> movie.getRating() < rating || Integer.parseInt(movie.getReleaseDate().substring(0, 4)) < releaseYear);
                     //Sort
                     switch (sortBy) {
                         case "Rating":

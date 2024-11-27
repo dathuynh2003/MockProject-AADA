@@ -10,12 +10,10 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-
-import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 
@@ -24,11 +22,6 @@ import javax.inject.Inject;
 import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.ActivityMainBinding;
 import ojt.aada.mockproject.di.MyApplication;
-import ojt.aada.mockproject.ui.about.AboutFragment;
-import ojt.aada.mockproject.ui.container.ContainerFragment;
-import ojt.aada.mockproject.ui.main.ViewPagerStateAdapter;
-import ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment;
-import ojt.aada.mockproject.ui.movie.favoritelist.FavoriteListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,6 +71,19 @@ public class MainActivity extends AppCompatActivity {
                 handleBackPressed();
             }
         });
+    }
+
+    //Create options menu to change layout
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.header_menu, menu);
+
+        MenuItem changLayoutItem = menu.findItem(R.id.action_layout);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+//        changLayoutItem.setVisible(true);
+//        searchItem.setVisible(false);
 
         mViewModel.getCurrentPageLiveData().observe(this, integer -> {
             switch (integer) {
@@ -90,50 +96,98 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         // Other tab (1,2,3) move to tab 0 was displaying in List Fragment
                         binding.appBarMain.toolBar.setTitle("Movies");
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(true);
+                        changLayoutItem.setVisible(true);
                     }
+                    searchItem.setVisible(false);
+                    menuInflater.inflate(R.menu.filter_menu, menu);
                     break;
                 case 1:
                     // Move to tab 1
                     actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
                     binding.appBarMain.toolBar.setTitle("Favorite");
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+                    changLayoutItem.setVisible(false);
+
+                    searchItem.setVisible(true);
+
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_popular);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_top_rated);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_upcoming);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_now_playing);
                     break;
                 case 2:
                     // Move to tab 2
                     actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
                     binding.appBarMain.toolBar.setTitle("Settings");
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+                    changLayoutItem.setVisible(false);
+
+                    searchItem.setVisible(false);
+
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_popular);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_top_rated);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_upcoming);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_now_playing);
                     break;
                 case 3:
                     // Move to tab 3
                     actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
                     binding.appBarMain.toolBar.setTitle("About");
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+                    changLayoutItem.setVisible(false);
+
+                    searchItem.setVisible(false);
+
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_popular);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_top_rated);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_upcoming);
+                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_now_playing);
                     break;
             }
         });
-    }
 
-    //Create options menu to change layout
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.header_menu, menu);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mViewModel.searchFavMoviesByTitle(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText == null || newText.isEmpty()) {
+                    mViewModel.searchFavMoviesByTitle(null);
+                }
+                return true;
+            }
+        });
         return true;
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (mIsGrid) {
-            item.setIcon(R.drawable.ic_view_list_24dp);
-            item.setTitle("Change to List View");
-        } else {
-            item.setIcon(R.drawable.ic_view_grid_24dp);
-            item.setTitle("Change to Grid View");
+        if (item.getItemId() == R.id.action_layout) {
+            if (mIsGrid) {
+                item.setIcon(R.drawable.ic_view_list_24dp);
+                item.setTitle("Change to List View");
+            } else {
+                item.setIcon(R.drawable.ic_view_grid_24dp);
+                item.setTitle("Change to Grid View");
+            }
+            mIsGrid = !mIsGrid;
+            mViewModel.setIsGrid(mIsGrid);
+        } else if (item.getItemId() == R.id.action_menu_popular) {
+            Log.d("TAG", "onOptionsItemSelected: popular");
+        } else if (item.getItemId() == R.id.action_menu_top_rated) {
+            Log.d("TAG", "onOptionsItemSelected: top rated");
+        } else if (item.getItemId() == R.id.action_menu_upcoming) {
+            Log.d("TAG", "onOptionsItemSelected: upcoming");
+        } else if (item.getItemId() == R.id.action_menu_now_playing) {
+            Log.d("TAG", "onOptionsItemSelected: now playing");
         }
-        mIsGrid = !mIsGrid;
-        mViewModel.setIsGrid(mIsGrid);
         return true;
     }
 
@@ -160,8 +214,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Before finish, set selected movie to null
-        mViewModel.setSelectedMovieLiveData(null);
-        finish();
+//        mViewModel.setSelectedMovieLiveData(null);
+//        finish();
+        moveTaskToBack(true);
 //        getOnBackPressedDispatcher().onBackPressed();
     }
 }

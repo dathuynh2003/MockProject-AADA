@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,18 +59,31 @@ public class FavoriteListFragment extends Fragment {
         binding.favMovieRv.setAdapter(mFavoriteListRVAdapter);
 
         mViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movies -> {
-            mFavoriteListRVAdapter.submitList(movies);
+            if (mViewModel.getFilteredFavMoviesLiveData().getValue() == null) {
+                mFavoriteListRVAdapter.submitList(movies);
+            } else {
+                mViewModel.fetchFilteredFavMovies();
+            }
+        });
+
+        mViewModel.getFilteredFavMoviesLiveData().observe(getViewLifecycleOwner(), movies -> {
+            if(movies == null) {
+                mFavoriteListRVAdapter.submitList(mViewModel.getFavoriteMovies().getValue());
+            } else {
+                mFavoriteListRVAdapter.submitList(movies);
+            }
         });
 
         mFavoriteListRVAdapter.setOnFavClickListener(v -> {
             Movie movie = (Movie) v.getTag();
             movie.setFavorite(!movie.isFavorite());
             mViewModel.updateMovie(movie); // Update ViewModel
-//            mViewModel.setSelectedMovieLiveData(movie); // Update ViewModel
+            mViewModel.setSelectedMovieLiveData(movie); // Update ViewModel
         });
 
         mFavoriteListRVAdapter.setOnSelectedMovieListener(v -> {
             Movie movie = (Movie) v.getTag();
+            mViewModel.setMoveToDetail(true);
             mViewModel.setSelectedMovieLiveData(movie); // Update ViewModel
         });
 

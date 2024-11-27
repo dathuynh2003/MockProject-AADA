@@ -116,9 +116,10 @@ public class MainFragment extends Fragment {
         });
 
         mViewModel.getSelectedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
-            if (movie == null) {
+            if (movie == null || !mViewModel.getIsMoveToDetail()) {
                 return;
             }
+            mViewModel.setMoveToDetail(false);
             binding.viewPager2.setCurrentItem(0);
         });
 

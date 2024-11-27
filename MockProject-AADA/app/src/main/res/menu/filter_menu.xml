@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/menu/overflow_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_menu_popular"
+        android:title="Popular Movies" />
+    <item
+        android:id="@+id/action_menu_top_rated"
+        android:title="Top Rated Movies" />
+    <item
+        android:id="@+id/action_menu_upcoming"
+        android:title="Upcoming Movies" />
+    <item
+        android:id="@+id/action_menu_now_playing"
+        android:title="Now Playing Movies" />
+</menu>

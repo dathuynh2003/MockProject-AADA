@@ -7,8 +7,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
-import androidx.paging.PagingDataTransforms;
-import androidx.paging.rxjava2.PagingRx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +34,10 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<CastnCrew>> mCastNCrewLiveData;
     private final MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>();
     private final MutableLiveData<Movie> mUpdatedMovieLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Movie>> mFilteredFavMoviesLiveData = new MutableLiveData<>();
+
+    private boolean mIsMoveToDetail = false;
+    private String mSearchTitle;
 
     private MutableLiveData<Boolean> mIsGrid = new MutableLiveData<>();
     private final CompositeDisposable mCompositeDisposable;
@@ -136,11 +138,18 @@ public class MainViewModel extends ViewModel {
         return mFavoriteMoviesLiveData;
     }
 
-    // Current Page in ViewPager2
+    /**
+     * Return the current Tab Layout in LiveData type
+     * @return MutableLiveData<Integer>
+     */
     public LiveData<Integer> getCurrentPageLiveData() {
         return currentPageLiveData;
     }
 
+    /**
+     * Set the current tab layout into LiveData type
+     * @param page
+     */
     public void setCurrentPageLiveData(int page) {
         currentPageLiveData.setValue(page);
     }
@@ -152,6 +161,43 @@ public class MainViewModel extends ViewModel {
      */
     public MutableLiveData<Movie> getUpdatedMovieLiveData() {
         return mUpdatedMovieLiveData;
+    }
+
+    /**
+     * Search the favorite movies by title
+     * If the title is empty, set the value of mFilteredFavMoviesLiveData to null
+     * Otherwise, filter the favorite movies by title and set the value of mFilteredFavMoviesLiveData to the filtered movies
+     * @param title
+     */
+    public void searchFavMoviesByTitle(String title) {
+        mSearchTitle = title;
+        if (title == null || title.isEmpty()) {
+            mFilteredFavMoviesLiveData.setValue(null);
+            return;
+        }
+        List<Movie> filteredMovies = new ArrayList<>();
+        mFavoriteMoviesLiveData.getValue().forEach(movie -> {
+            if (movie.getTitle().toLowerCase().contains(title.toLowerCase())) {
+                filteredMovies.add(movie);
+            }
+        });
+        mFilteredFavMoviesLiveData.setValue(filteredMovies);
+    }
+
+    public void fetchFilteredFavMovies() {
+        searchFavMoviesByTitle(mSearchTitle);
+    }
+
+    public MutableLiveData<List<Movie>> getFilteredFavMoviesLiveData() {
+        return mFilteredFavMoviesLiveData;
+    }
+
+    public boolean getIsMoveToDetail() {
+        return mIsMoveToDetail;
+    }
+
+    public void setMoveToDetail(boolean isMoveToDetail) {
+        mIsMoveToDetail = isMoveToDetail;
     }
 
 }

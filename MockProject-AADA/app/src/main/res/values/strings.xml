@@ -16,4 +16,5 @@
     <string name="overview_text">Overview:</string>
     <string name="cast_amp_crew_text"><![CDATA[Cast & Crew]]></string>
     <string name="reminder_text">Reminder</string>
+    <string name="search_text">Search</string>
 </resources>

@@ -6,35 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/main"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
-
-<!--        <com.google.android.material.appbar.AppBarLayout-->
-<!--            android:id="@+id/app_bar_layout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:elevation="4dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--            <androidx.appcompat.widget.Toolbar-->
-<!--                android:id="@+id/tool_bar"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="@color/primary"-->
-<!--                app:menu="@menu/header_menu"-->
-<!--                app:title="Movies"-->
-<!--                app:titleTextColor="@color/white" />-->
-<!--        </com.google.android.material.appbar.AppBarLayout>-->
-
-        <include
-            android:id="@+id/app_bar_main"
-            layout="@layout/app_bar_main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <include
+        android:id="@+id/app_bar_main"
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <!--     Navigation drawer-->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
