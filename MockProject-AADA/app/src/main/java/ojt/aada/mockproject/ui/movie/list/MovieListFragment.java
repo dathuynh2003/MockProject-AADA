@@ -166,8 +166,11 @@ public class MovieListFragment extends Fragment {
         curRating = sp.getInt(Constants.RATING_KEY, 0);
         curReleaseYear = Integer.parseInt(sp.getString(Constants.RELEASE_YEAR_KEY, "1970"));
         curSortByStr = sp.getString(Constants.SORT_BY_KEY, "Release Date");
+        mViewModel.setIsCallApi(true);
+
         if (Constants.CATEGORY_KEY.equals(key)) {
             mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear);
+            binding.movieRv.scrollToPosition(0);
         } else if (Constants.RATING_KEY.equals(key)) {
             mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear);
         } else if (Constants.RELEASE_YEAR_KEY.equals(key)) {
@@ -175,6 +178,5 @@ public class MovieListFragment extends Fragment {
         } else if (Constants.SORT_BY_KEY.equals(key)) {
             mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear);
         }
-        binding.movieRv.scrollToPosition(0);
     };
 }

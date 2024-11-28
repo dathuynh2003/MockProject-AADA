@@ -1,16 +1,22 @@
 package ojt.aada.mockproject.ui;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.GravityCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -21,6 +27,7 @@ import javax.inject.Inject;
 
 import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.ActivityMainBinding;
+import ojt.aada.mockproject.databinding.NavHeaderBinding;
 import ojt.aada.mockproject.di.MyApplication;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,6 +70,43 @@ public class MainActivity extends AppCompatActivity {
                 handleBackPressed();
             });
         });
+
+        // Get Android ID
+        String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        mViewModel.getUserProfileLiveData(androidId).observe(this, userProfile -> {
+            if (userProfile != null) {
+                View headerView = binding.navView.getHeaderView(0);
+//                headerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                    @Override
+//                    public void onGlobalLayout() {
+//                        headerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                        NavHeaderBinding navHeaderBinding = DataBindingUtil.bind(headerView);
+//                        if (navHeaderBinding != null) {
+//                            navHeaderBinding.setUser(userProfile);
+//                        }
+//                    }
+//                });
+                NavHeaderBinding navHeaderBinding = DataBindingUtil.bind(headerView);
+                if (navHeaderBinding != null) {
+                    navHeaderBinding.setUser(userProfile);
+                }
+            }
+        });
+
+        View headerView = binding.navView.getHeaderView(0);
+        headerView.findViewById(R.id.edit_btn).setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_main_fragment_to_profile_fragment);
+            getSupportActionBar().hide();
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+        if (Navigation.findNavController(this, R.id.nav_host_fragment_content_main).getCurrentDestination().getId() == R.id.profile_fragment) {
+            getSupportActionBar().hide();
+        } else {
+            getSupportActionBar().show();
+        }
 
         // Add the OnBackPressedCallback once in onCreate (not inside handleBackPressed)
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -200,6 +244,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void handleBackPressed() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+        if (navController.getCurrentDestination().getId() != R.id.main_fragment) {
+            navController.popBackStack();
+            this.getSupportActionBar().show();
+            return;
+        }
 
         if (mViewModel.getCurrentPageLiveData().getValue() != null &&
                 mViewModel.getCurrentPageLiveData().getValue() == 0) {

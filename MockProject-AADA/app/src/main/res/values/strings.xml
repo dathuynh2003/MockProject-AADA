@@ -17,4 +17,6 @@
     <string name="cast_amp_crew_text"><![CDATA[Cast & Crew]]></string>
     <string name="reminder_text">Reminder</string>
     <string name="search_text">Search</string>
+    <string name="camera_text">Camera</string>
+    <string name="gallery_text">Gallery</string>
 </resources>

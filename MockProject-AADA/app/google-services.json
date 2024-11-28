@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "152948609361",
+    "project_id": "aada-mockproject",
+    "storage_bucket": "aada-mockproject.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152948609361:android:be5ee0bb83cd3bbda08370",
+        "android_client_info": {
+          "package_name": "ojt.aada.mockproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAg8DBCsGBaqBKaq9UlmV7pSvfFnXlBwVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

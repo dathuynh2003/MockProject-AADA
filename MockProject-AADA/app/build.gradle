@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -36,6 +37,12 @@ android {
 dependencies {
     implementation project(':domain')
     implementation project(':data')
+
+    // Import the Firebase BoM
+    implementation(platform(libs.firebase.bom))
+    // Add the dependency for the Realtime Database library
+    implementation(libs.firebase.database)
+
     //Preference
     implementation libs.preference
     //Navigation

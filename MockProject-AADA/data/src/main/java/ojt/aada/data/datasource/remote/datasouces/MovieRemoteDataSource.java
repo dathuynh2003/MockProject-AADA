@@ -86,7 +86,8 @@ public class MovieRemoteDataSource extends RxPagingSource<Integer, Movie> {
                     mMovieList = response1.getResults();
 
                     //Filter
-                    mMovieList.removeIf(movie -> movie.getRating() < rating || Integer.parseInt(movie.getReleaseDate().substring(0, 4)) < releaseYear);
+                    mMovieList.removeIf(movie -> movie.getRating() < rating ||
+                            Integer.parseInt(movie.getReleaseDate().substring(0, 4)) < releaseYear);
                     //Sort
                     switch (sortBy) {
                         case "Rating":

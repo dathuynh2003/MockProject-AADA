@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="ojt.aada.mockproject.utils.FunctionUtils"/>
+        <variable
+            name="user"
+            type="ojt.aada.domain.models.UserProfile" />
+    </data>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:background="@color/grey">
 
     <ImageView
         android:id="@+id/avatar"
@@ -13,7 +21,8 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_corners"
         android:clipToOutline="true"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        app:bitmap="@{user.avatar}"/>
 
     <TextView
         android:id="@+id/user_name"
@@ -22,7 +31,7 @@
         android:layout_below="@id/avatar"
         android:layout_centerInParent="true"
         android:layout_marginTop="16dp"
-        android:text="@string/example_user_name"
+        android:text="@{user.name}"
         android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -32,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
-        android:layout_marginStart="26dp"
+        android:layout_marginLeft="26dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/ic_email_24dp" />
 
@@ -44,7 +53,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_toEndOf="@id/ic_email"
-        android:text="@string/example_email"
+        android:text="@{user.email}"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -64,7 +73,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
         android:layout_toEndOf="@id/ic_cake"
-        android:text="@string/date_format"
+        android:text="@{user.dob}"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -84,7 +93,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
         android:layout_toEndOf="@id/ic_user"
-        android:text="@string/gender_text"
+        android:text="@{user.gender}"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -96,8 +105,44 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_button"
-        android:text="@string/edit_text"
+        android:text="Edit"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/reminder_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_btn"
+        android:layout_marginStart="26dp"
+        android:text="Reminder"
+        android:textColor="@color/black"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/top_reminder_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reminder_text_view"
+        android:layout_marginHorizontal="26dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/white_item"
+        android:elevation="10dp"
+        tools:itemCount="2"
+        tools:listitem="@layout/header_reminder_item_view" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/show_all_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_reminder_recycler_view"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_button"
+        android:text="Show All"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
 </RelativeLayout>
+</layout>

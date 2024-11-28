@@ -32,7 +32,7 @@ public class RemoteMovieRepositoryImpl implements RemoteMovieRepository {
             5,
             false,
             20,
-            10 + 2 * 5
+            100
     );
 
     //Constructor

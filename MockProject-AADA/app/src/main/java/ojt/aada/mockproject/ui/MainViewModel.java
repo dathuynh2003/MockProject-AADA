@@ -1,5 +1,6 @@
 package ojt.aada.mockproject.ui;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -7,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
+import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +22,12 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ojt.aada.domain.models.CastnCrew;
 import ojt.aada.domain.models.Movie;
+import ojt.aada.domain.models.UserProfile;
 import ojt.aada.domain.usecase.GetCastNCrewUseCase;
 import ojt.aada.domain.usecase.GetFavMoviesUseCase;
 import ojt.aada.domain.usecase.GetMovieDetailUseCase;
 import ojt.aada.domain.usecase.GetMoviesUseCase;
+import ojt.aada.domain.usecase.ManageUserProfileUseCase;
 import ojt.aada.domain.usecase.UpdateFavMovieUseCase;
 
 @Singleton
@@ -35,9 +39,11 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>();
     private final MutableLiveData<Movie> mUpdatedMovieLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Movie>> mFilteredFavMoviesLiveData = new MutableLiveData<>();
+    private LiveData<UserProfile> mUserProfileLiveData;
 
     private boolean mIsMoveToDetail = false;
     private String mSearchTitle;
+    private boolean isCallApi = true;
 
     private MutableLiveData<Boolean> mIsGrid = new MutableLiveData<>();
     private final CompositeDisposable mCompositeDisposable;
@@ -46,13 +52,15 @@ public class MainViewModel extends ViewModel {
     private final GetCastNCrewUseCase mGetCastNCrewUseCase;
     private final GetFavMoviesUseCase mGetFavMoviesUseCase;
     private final UpdateFavMovieUseCase mUpdateFavMovieUseCase;
+    private final ManageUserProfileUseCase mManageUserProfileUseCase;
 
     @Inject
     public MainViewModel(GetMoviesUseCase getMoviesUseCase,
                          GetMovieDetailUseCase getMovieDetailUseCase,
                          GetCastNCrewUseCase getCastNCrewUseCase,
                          GetFavMoviesUseCase getFavMoviesUseCase,
-                         UpdateFavMovieUseCase updateFavMovieUseCase) {
+                         UpdateFavMovieUseCase updateFavMovieUseCase,
+                         ManageUserProfileUseCase manageUserProfileUseCase) {
 
         mGetMoviesUseCase = getMoviesUseCase;
         mCompositeDisposable = new CompositeDisposable();
@@ -60,6 +68,7 @@ public class MainViewModel extends ViewModel {
         mGetCastNCrewUseCase = getCastNCrewUseCase;
         mGetFavMoviesUseCase = getFavMoviesUseCase;
         mUpdateFavMovieUseCase = updateFavMovieUseCase;
+        mManageUserProfileUseCase = manageUserProfileUseCase;
 
         mMovieListLiveData = new MutableLiveData<>();
         mSelectedMovieLiveData = new MutableLiveData<>();
@@ -68,7 +77,7 @@ public class MainViewModel extends ViewModel {
 
     // Get/Set mMovieListLiveData
     public MutableLiveData<PagingData<Movie>> getRemoteMovieList(String category, String sortBy, int rating, int releaseYear) {
-        if (mMovieListLiveData.getValue() == null) {
+        if (isCallApi) {
             Disposable disposable = mGetMoviesUseCase.getMovies(ViewModelKt.getViewModelScope(this), category, sortBy, rating, releaseYear)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -77,8 +86,15 @@ public class MainViewModel extends ViewModel {
                             throwable -> Log.d("FATAL", "getMoviePagingData: " + throwable)
                     );
             mCompositeDisposable.add(disposable);
+            isCallApi = false;
         }
+        return mMovieListLiveData;
+    }
 
+    public MutableLiveData<PagingData<Movie>> getRemoteMovieList() {
+        if (mMovieListLiveData.getValue() == null) {
+            getRemoteMovieList("Popular Movies", "Release Date", 0, 1970);
+        }
         return mMovieListLiveData;
     }
 
@@ -140,6 +156,7 @@ public class MainViewModel extends ViewModel {
 
     /**
      * Return the current Tab Layout in LiveData type
+     *
      * @return MutableLiveData<Integer>
      */
     public LiveData<Integer> getCurrentPageLiveData() {
@@ -148,6 +165,7 @@ public class MainViewModel extends ViewModel {
 
     /**
      * Set the current tab layout into LiveData type
+     *
      * @param page
      */
     public void setCurrentPageLiveData(int page) {
@@ -167,6 +185,7 @@ public class MainViewModel extends ViewModel {
      * Search the favorite movies by title
      * If the title is empty, set the value of mFilteredFavMoviesLiveData to null
      * Otherwise, filter the favorite movies by title and set the value of mFilteredFavMoviesLiveData to the filtered movies
+     *
      * @param title
      */
     public void searchFavMoviesByTitle(String title) {
@@ -198,6 +217,25 @@ public class MainViewModel extends ViewModel {
 
     public void setMoveToDetail(boolean isMoveToDetail) {
         mIsMoveToDetail = isMoveToDetail;
+    }
+
+    public LiveData<UserProfile> getUserProfileLiveData(String userId) {
+        if (mUserProfileLiveData == null) {
+            mUserProfileLiveData = mManageUserProfileUseCase.getUserProfile(userId);
+        }
+        return mUserProfileLiveData;
+    }
+
+    public void updateUserProfile(UserProfile userProfile) {
+        mManageUserProfileUseCase.updateUserProfile(userProfile);
+    }
+
+    public boolean getIsCallApi() {
+        return isCallApi;
+    }
+
+    public void setIsCallApi(boolean isCallApi) {
+        this.isCallApi = isCallApi;
     }
 
 }
