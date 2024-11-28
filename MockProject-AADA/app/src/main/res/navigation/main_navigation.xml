@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_main_fragment_to_profile_fragment"
             app:destination="@id/profile_fragment" />
+        <action
+            android:id="@+id/action_main_fragment_to_reminder_fragment"
+            app:destination="@id/reminder_fragment" />
     </fragment>
 
     <fragment
@@ -20,4 +23,11 @@
         android:name="ojt.aada.mockproject.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile"/>
+
+    <fragment
+        android:id="@+id/reminder_fragment"
+        android:name="ojt.aada.mockproject.ui.reminder.ReminderListFragment"
+        android:label="fragment_reminder"
+        tools:layout="@layout/fragment_reminder_list"/>
+
 </navigation>

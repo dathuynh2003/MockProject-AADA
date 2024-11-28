@@ -1,6 +1,5 @@
 package ojt.aada.mockproject.ui;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -8,7 +7,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
-import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +20,13 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ojt.aada.domain.models.CastnCrew;
 import ojt.aada.domain.models.Movie;
+import ojt.aada.domain.models.Reminder;
 import ojt.aada.domain.models.UserProfile;
 import ojt.aada.domain.usecase.GetCastNCrewUseCase;
 import ojt.aada.domain.usecase.GetFavMoviesUseCase;
 import ojt.aada.domain.usecase.GetMovieDetailUseCase;
 import ojt.aada.domain.usecase.GetMoviesUseCase;
+import ojt.aada.domain.usecase.ManageReminderUseCase;
 import ojt.aada.domain.usecase.ManageUserProfileUseCase;
 import ojt.aada.domain.usecase.UpdateFavMovieUseCase;
 
@@ -40,6 +40,7 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<Movie> mUpdatedMovieLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Movie>> mFilteredFavMoviesLiveData = new MutableLiveData<>();
     private LiveData<UserProfile> mUserProfileLiveData;
+    private LiveData<List<Reminder>> mReminderLiveData;
 
     private boolean mIsMoveToDetail = false;
     private String mSearchTitle;
@@ -53,6 +54,7 @@ public class MainViewModel extends ViewModel {
     private final GetFavMoviesUseCase mGetFavMoviesUseCase;
     private final UpdateFavMovieUseCase mUpdateFavMovieUseCase;
     private final ManageUserProfileUseCase mManageUserProfileUseCase;
+    private final ManageReminderUseCase mMangeReminderUseCase;
 
     @Inject
     public MainViewModel(GetMoviesUseCase getMoviesUseCase,
@@ -60,7 +62,8 @@ public class MainViewModel extends ViewModel {
                          GetCastNCrewUseCase getCastNCrewUseCase,
                          GetFavMoviesUseCase getFavMoviesUseCase,
                          UpdateFavMovieUseCase updateFavMovieUseCase,
-                         ManageUserProfileUseCase manageUserProfileUseCase) {
+                         ManageUserProfileUseCase manageUserProfileUseCase,
+                         ManageReminderUseCase manageReminderUseCase) {
 
         mGetMoviesUseCase = getMoviesUseCase;
         mCompositeDisposable = new CompositeDisposable();
@@ -69,6 +72,7 @@ public class MainViewModel extends ViewModel {
         mGetFavMoviesUseCase = getFavMoviesUseCase;
         mUpdateFavMovieUseCase = updateFavMovieUseCase;
         mManageUserProfileUseCase = manageUserProfileUseCase;
+        mMangeReminderUseCase = manageReminderUseCase;
 
         mMovieListLiveData = new MutableLiveData<>();
         mSelectedMovieLiveData = new MutableLiveData<>();
@@ -87,13 +91,6 @@ public class MainViewModel extends ViewModel {
                     );
             mCompositeDisposable.add(disposable);
             isCallApi = false;
-        }
-        return mMovieListLiveData;
-    }
-
-    public MutableLiveData<PagingData<Movie>> getRemoteMovieList() {
-        if (mMovieListLiveData.getValue() == null) {
-            getRemoteMovieList("Popular Movies", "Release Date", 0, 1970);
         }
         return mMovieListLiveData;
     }
@@ -237,5 +234,21 @@ public class MainViewModel extends ViewModel {
     public void setIsCallApi(boolean isCallApi) {
         this.isCallApi = isCallApi;
     }
+
+    public LiveData<List<Reminder>> getReminderLiveData() {
+        if (mReminderLiveData == null) {
+            mReminderLiveData = mMangeReminderUseCase.getAllReminder();
+        }
+        return mReminderLiveData;
+    }
+
+    public void addReminder(Reminder reminder) {
+        mMangeReminderUseCase.addReminder(reminder);
+    }
+
+    public void deleteReminder(Reminder reminder) {
+        mMangeReminderUseCase.deleteReminder(reminder);
+    }
+
 
 }

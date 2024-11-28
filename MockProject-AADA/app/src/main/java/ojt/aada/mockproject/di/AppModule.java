@@ -5,10 +5,12 @@ import android.app.Application;
 import dagger.Module;
 import dagger.Provides;
 import ojt.aada.data.repositories.LocalMovieRepositoryImpl;
+import ojt.aada.data.repositories.LocalReminderRepositoryImpl;
 import ojt.aada.data.repositories.RemoteCastNCrewRepositoryImpl;
 import ojt.aada.data.repositories.RemoteMovieRepositoryImpl;
 import ojt.aada.data.repositories.RemoteUserProfileRepositoryImpl;
 import ojt.aada.domain.repositories.LocalMovieRepository;
+import ojt.aada.domain.repositories.LocalReminderRepository;
 import ojt.aada.domain.repositories.RemoteCastNCrewRepository;
 import ojt.aada.domain.repositories.RemoteMovieRepository;
 import ojt.aada.domain.repositories.RemoteUserProfileRepository;
@@ -44,5 +46,10 @@ public class AppModule {
     @Provides
     public RemoteUserProfileRepository provideUserProfileRepository(RemoteUserProfileRepositoryImpl remoteUserProfileRepositoryImpl) {
         return remoteUserProfileRepositoryImpl;
+    }
+
+    @Provides
+    public LocalReminderRepository provideLocalReminderRepository(LocalReminderRepositoryImpl localReminderRepositoryImpl) {
+        return localReminderRepositoryImpl;
     }
 }

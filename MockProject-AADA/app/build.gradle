@@ -50,6 +50,7 @@ dependencies {
     implementation libs.navigation.ui
     //Dagger
     implementation libs.dagger
+    implementation libs.androidx.swiperefreshlayout
     annotationProcessor libs.dagger.compiler
     // https://mvnrepository.com/artifact/androidx.paging/paging-rxjava2
     implementation(libs.paging.rxjava2)

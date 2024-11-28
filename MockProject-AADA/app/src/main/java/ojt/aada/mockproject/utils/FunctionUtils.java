@@ -6,6 +6,8 @@ import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
 
+import java.util.Date;
+
 import ojt.aada.mockproject.R;
 
 public class FunctionUtils {
@@ -21,5 +23,11 @@ public class FunctionUtils {
     @BindingAdapter("bitmap")
     public static void displayAvatar(ImageView imageView, String avatar) {
         imageView.setImageBitmap(ImageValidator.base64ToBitmap(avatar));
+    }
+
+    public static String displayDateFromMillisecond(long time, String pattern) {
+        return Validator.convertDate(new Date(time), pattern);
+
+
     }
 }

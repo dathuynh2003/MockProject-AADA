@@ -1,5 +1,7 @@
 package ojt.aada.mockproject.ui.movie.detail;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -10,12 +12,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import ojt.aada.domain.models.Movie;
+import ojt.aada.domain.models.Reminder;
 import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.FragmentMovieDetailBinding;
 import ojt.aada.mockproject.di.MyApplication;
@@ -31,6 +39,9 @@ public class MovieDetailFragment extends Fragment {
 
     private FragmentMovieDetailBinding binding;
     private CastnCrewRVAdapter adapter;
+
+    private Calendar calendar;
+
     @Inject
     MainViewModel mViewModel;
 
@@ -97,6 +108,53 @@ public class MovieDetailFragment extends Fragment {
             }
         });
 
+        binding.reminderButton.setOnClickListener(v -> {
+            showDateTimePicker(binding.getDetail());
+        });
+
         return binding.getRoot();
+    }
+
+
+    /**
+     * Show the date and time picker dialog
+     * @param movie the movie to set the reminder
+     */
+    private void showDateTimePicker(Movie movie) {
+        calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, (view, year, month, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            showTimePicker(movie);
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        // Once date and time are set, call this to schedule the alarm
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault());
+        datePickerDialog.setTitle(dateFormat.format(calendar.getTime()));
+        datePickerDialog.show();
+    }
+
+    /**
+     * Show the time picker dialog
+     * @param movie the movie to set the reminder
+     */
+    private void showTimePicker(Movie movie) {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, (view, hourOfDay, minute) -> {
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.SECOND, 0);
+            // Check if the selected date and time are in the past
+            if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                Toast.makeText(getContext(), "Please select a future date and time.", Toast.LENGTH_SHORT).show();
+            } else {
+                // Create or update reminder in the database
+                Reminder newReminder = new Reminder(0, calendar.getTimeInMillis(), movie.getId(), movie.getTitle(), movie.getReleaseDate(), movie.getPosterPath(), movie.getRating());
+                mViewModel.addReminder(newReminder);
+//                scheduleAlarm(newReminder, movie);
+            }
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+        timePickerDialog.setTitle("Set Time");
+        timePickerDialog.show();
     }
 }

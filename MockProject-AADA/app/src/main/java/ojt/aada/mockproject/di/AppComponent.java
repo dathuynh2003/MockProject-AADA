@@ -10,6 +10,7 @@ import ojt.aada.mockproject.ui.movie.detail.MovieDetailFragment;
 import ojt.aada.mockproject.ui.movie.favoritelist.FavoriteListFragment;
 import ojt.aada.mockproject.ui.movie.list.MovieListFragment;
 import ojt.aada.mockproject.ui.profile.ProfileFragment;
+import ojt.aada.mockproject.ui.reminder.ReminderListFragment;
 
 @Singleton
 @Component(modules = {NetworkModule.class, AppModule.class})
@@ -21,4 +22,5 @@ public interface AppComponent {
     void inject(ContainerFragment containerFragment);
     void inject(MainFragment mainFragment);
     void inject(ProfileFragment profileFragment);
+    void inject(ReminderListFragment reminderListFragment);
 }

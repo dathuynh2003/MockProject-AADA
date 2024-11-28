@@ -62,8 +62,7 @@ public class MovieListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMovieListBinding.inflate(inflater, container, false);
 
@@ -79,12 +78,14 @@ public class MovieListFragment extends Fragment {
         setupRecyclerView(mIsGrid);
 
         //  Observe the remote movie list from the view model and update the recycler view
-        mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear)
-                .observe(getViewLifecycleOwner(), movies -> {
+        mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear).observe(getViewLifecycleOwner(), movies -> {
             this.movies = movies;
             mMovieListRVAdapter.submitData(getLifecycle(), movies);
             Log.d("TAG", "onCreateView: " + mMovieListRVAdapter.snapshot().getItems().size());
             binding.pbLoading.setVisibility(View.GONE);
+//            if (binding.swipeRefreshLayout.isRefreshing()) {
+//                binding.swipeRefreshLayout.setRefreshing(false);
+//            }
         });
 
 
@@ -108,6 +109,21 @@ public class MovieListFragment extends Fragment {
             }
         });
 
+        Log.d("TAG", "onCreateView: " + binding.swipeRefreshLayout.isRefreshing());
+
+        binding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (!mViewModel.getIsCallApi()) {
+                binding.pbLoading.setVisibility(View.VISIBLE);
+                mViewModel.setIsCallApi(true);
+                mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear);
+            }
+        });
+        mMovieListRVAdapter.addOnPagesUpdatedListener(() -> {
+            if (binding.swipeRefreshLayout.isRefreshing()) {
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+            return null;
+        });
         return binding.getRoot();
     }
 

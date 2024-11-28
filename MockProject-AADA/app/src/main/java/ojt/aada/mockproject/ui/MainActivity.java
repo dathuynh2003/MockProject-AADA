@@ -33,6 +33,7 @@ import ojt.aada.mockproject.di.MyApplication;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private NavHeaderBinding navHeaderBinding;
     private boolean mIsGrid;
     @Inject
     MainViewModel mViewModel;
@@ -47,6 +48,15 @@ public class MainActivity extends AppCompatActivity {
         ((MyApplication) getApplicationContext()).appComponent.inject(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        mViewModel.getReminderLiveData().observe(this, reminders -> {
+            if (reminders != null) {
+                Log.d("TAG", "onCreate: " + reminders.size());
+            }
+        });
+
+        View headerView = binding.navView.getHeaderView(0);
+        navHeaderBinding = DataBindingUtil.bind(headerView);
 
         mIsGrid = Boolean.TRUE.equals(mViewModel.getIsGrid().getValue());
 
@@ -64,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
             }
             binding.appBarMain.toolBar.setTitle(movie.getTitle());
             binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
             actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
             actionBarDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
             actionBarDrawerToggle.setToolbarNavigationClickListener(v -> {
@@ -73,10 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Get Android ID
         String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-
         mViewModel.getUserProfileLiveData(androidId).observe(this, userProfile -> {
             if (userProfile != null) {
-                View headerView = binding.navView.getHeaderView(0);
 //                headerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 //                    @Override
 //                    public void onGlobalLayout() {
@@ -87,15 +99,14 @@ public class MainActivity extends AppCompatActivity {
 //                        }
 //                    }
 //                });
-                NavHeaderBinding navHeaderBinding = DataBindingUtil.bind(headerView);
                 if (navHeaderBinding != null) {
                     navHeaderBinding.setUser(userProfile);
                 }
             }
         });
 
-        View headerView = binding.navView.getHeaderView(0);
-        headerView.findViewById(R.id.edit_btn).setOnClickListener(v -> {
+
+        navHeaderBinding.editBtn.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_main_fragment_to_profile_fragment);
             getSupportActionBar().hide();
@@ -107,6 +118,31 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getSupportActionBar().show();
         }
+
+//        navHeaderBinding.topReminderRecyclerView.setAdapter();
+
+
+        navHeaderBinding.showAllBtn.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_main_fragment_to_reminder_fragment);
+
+            binding.appBarMain.toolBar.setTitle("Reminders");
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_search).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
+            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
+
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+            actionBarDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
+
+            actionBarDrawerToggle.setToolbarNavigationClickListener(v1 -> {
+                handleBackPressed();
+            });
+
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+        });
 
         // Add the OnBackPressedCallback once in onCreate (not inside handleBackPressed)
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -122,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.header_menu, menu);
+        menuInflater.inflate(R.menu.filter_menu, menu);
 
         MenuItem changLayoutItem = menu.findItem(R.id.action_layout);
         MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -142,8 +179,13 @@ public class MainActivity extends AppCompatActivity {
                         binding.appBarMain.toolBar.setTitle("Movies");
                         changLayoutItem.setVisible(true);
                     }
+
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(true);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(true);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(true);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(true);
+
                     searchItem.setVisible(false);
-                    menuInflater.inflate(R.menu.filter_menu, menu);
                     break;
                 case 1:
                     // Move to tab 1
@@ -153,10 +195,10 @@ public class MainActivity extends AppCompatActivity {
 
                     searchItem.setVisible(true);
 
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_popular);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_top_rated);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_upcoming);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_now_playing);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
                     break;
                 case 2:
                     // Move to tab 2
@@ -166,10 +208,10 @@ public class MainActivity extends AppCompatActivity {
 
                     searchItem.setVisible(false);
 
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_popular);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_top_rated);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_upcoming);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_now_playing);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
                     break;
                 case 3:
                     // Move to tab 3
@@ -179,10 +221,10 @@ public class MainActivity extends AppCompatActivity {
 
                     searchItem.setVisible(false);
 
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_popular);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_top_rated);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_upcoming);
-                    binding.appBarMain.toolBar.getMenu().removeItem(R.id.action_menu_now_playing);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
+                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
                     break;
             }
         });
@@ -247,7 +289,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (navController.getCurrentDestination().getId() != R.id.main_fragment) {
             navController.popBackStack();
-            this.getSupportActionBar().show();
+            if (navController.getCurrentDestination().getId() == R.id.profile_fragment) {
+                this.getSupportActionBar().show();
+            }
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
             return;
         }
 
@@ -259,6 +304,10 @@ public class MainActivity extends AppCompatActivity {
                 actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
                 mViewModel.setSelectedMovieLiveData(null);
                 binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(true);
+                binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(true);
+                binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(true);
+                binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(true);
+                binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(true);
                 return;
             }
         }
