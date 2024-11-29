@@ -11,7 +11,6 @@ import ojt.aada.domain.models.Reminder;
 public interface LocalReminderRepository {
     Completable addReminder(Reminder reminder);
     Completable removeReminder(Reminder reminder);
-    void updateReminder(Reminder reminder);
+    Completable updateReminder(Reminder reminder);
     Flowable<List<Reminder>> getAllReminder();
-
 }

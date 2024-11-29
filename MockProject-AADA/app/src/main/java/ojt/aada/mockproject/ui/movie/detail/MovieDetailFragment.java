@@ -1,5 +1,6 @@
 package ojt.aada.mockproject.ui.movie.detail;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -7,6 +8,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +23,9 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -28,6 +35,8 @@ import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.FragmentMovieDetailBinding;
 import ojt.aada.mockproject.di.MyApplication;
 import ojt.aada.mockproject.ui.MainViewModel;
+import ojt.aada.mockproject.utils.Validator;
+import ojt.aada.mockproject.workers.ReminderWorker;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,6 +90,49 @@ public class MovieDetailFragment extends Fragment {
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.error_image_black_24)
                     .into(binding.movieDetailPoster);
+
+            // When selected movie in List
+            if (movie.getReminder() != null) {
+                Date reminderDate = new Date(movie.getReminder().getTime());
+                binding.reminderText.setText(Validator.convertDate(reminderDate, "yyyy/MM/dd HH:mm"));
+            }
+        });
+
+        mViewModel.getReminderLiveData().observe(getViewLifecycleOwner(), reminders -> {
+            boolean isReminder = false;
+            // When notify was set in MovieDetailFragment, update UI
+            for (Reminder reminder : reminders) {
+                if (reminder.getMovieId() == mViewModel.getSelectedMovieLiveData().getValue().getId()) {
+                    mViewModel.getSelectedMovieLiveData().getValue().setReminder(reminder);
+                    Date reminderDate = new Date(reminder.getTime());
+                    isReminder = true;
+                    binding.reminderText.setText(Validator.convertDate(reminderDate, "yyyy/MM/dd HH:mm"));
+                    break;
+                }
+            }
+
+            // When notify was push to user, the reminder will be deleted
+            if (!isReminder) {
+                binding.reminderText.setText("");
+            }
+        });
+
+        mViewModel.getReminderLiveData().observe(getViewLifecycleOwner(), reminders -> {
+            boolean isReminder = false;
+            for (Reminder reminder : reminders) {
+                if (reminder.getMovieId() == mViewModel.getSelectedMovieLiveData().getValue().getId()) {
+                    mViewModel.getSelectedMovieLiveData().getValue().setReminder(reminder);
+                    Date reminderDate = new Date(reminder.getTime());
+                    isReminder = true;
+                    binding.reminderText.setVisibility(View.VISIBLE);
+                    binding.reminderText.setText(Validator.convertDate(reminderDate, "yyyy/MM/dd HH:mm"));
+                    break;
+                }
+            }
+
+            if (!isReminder) {
+                binding.reminderText.setText("");
+            }
         });
 
         mViewModel.getCastNCrewLiveData().observe(getViewLifecycleOwner(), castNCrew -> {
@@ -89,7 +141,6 @@ public class MovieDetailFragment extends Fragment {
             }
             binding.castNCrewPb.setVisibility(View.GONE);
         });
-
         // Set the favorite star click listener
         // This will update the movie favorite status
         binding.favStar.setOnClickListener(v -> {
@@ -101,12 +152,12 @@ public class MovieDetailFragment extends Fragment {
 //            binding.setDetail(movie);
         });
 
-        // Observe the updated movie
-        mViewModel.getUpdatedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
-            if (mViewModel.getSelectedMovieLiveData().getValue().getId() == movie.getId()) {
-                binding.setDetail(movie);
-            }
-        });
+//        // Observe the updated movie
+//        mViewModel.getUpdatedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
+//            if (mViewModel.getSelectedMovieLiveData().getValue().getId() == movie.getId()) {
+//                binding.setDetail(mViewModel.getSelectedMovieLiveData().getValue());
+//            }
+//        });
 
         binding.reminderButton.setOnClickListener(v -> {
             showDateTimePicker(binding.getDetail());
@@ -118,6 +169,7 @@ public class MovieDetailFragment extends Fragment {
 
     /**
      * Show the date and time picker dialog
+     *
      * @param movie the movie to set the reminder
      */
     private void showDateTimePicker(Movie movie) {
@@ -137,6 +189,7 @@ public class MovieDetailFragment extends Fragment {
 
     /**
      * Show the time picker dialog
+     *
      * @param movie the movie to set the reminder
      */
     private void showTimePicker(Movie movie) {
@@ -149,12 +202,39 @@ public class MovieDetailFragment extends Fragment {
                 Toast.makeText(getContext(), "Please select a future date and time.", Toast.LENGTH_SHORT).show();
             } else {
                 // Create or update reminder in the database
-                Reminder newReminder = new Reminder(0, calendar.getTimeInMillis(), movie.getId(), movie.getTitle(), movie.getReleaseDate(), movie.getPosterPath(), movie.getRating());
-                mViewModel.addReminder(newReminder);
-//                scheduleAlarm(newReminder, movie);
+                if (movie.getReminder() == null) {
+                    Reminder newReminder = new Reminder(calendar.getTimeInMillis(), movie.getId(), movie.getTitle(), movie.getReleaseDate(), movie.getPosterPath(), movie.getRating());
+                    mViewModel.addReminder(newReminder);
+                    scheduleReminder(requireContext(), newReminder);
+                } else {
+                    Reminder reminder = movie.getReminder();
+                    reminder.setTime(calendar.getTimeInMillis());
+                    mViewModel.updateReminder(reminder);
+                    scheduleReminder(requireContext(), reminder);
+                }
             }
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
         timePickerDialog.setTitle("Set Time");
         timePickerDialog.show();
+    }
+
+    private void scheduleReminder(Context context, Reminder reminder) {
+        long delay = reminder.getTime() - System.currentTimeMillis();
+        if (delay > 0) {
+            @SuppressLint("RestrictedApi")
+            Data inputData = new Data.Builder()
+                    .putAll(reminder.toMap())
+                    .build();
+
+            OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(ReminderWorker.class)
+                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                    .addTag(String.valueOf(reminder.getMovieId()))
+                    .setInputData(inputData)
+                    .build();
+
+            WorkManager.getInstance(requireActivity())
+                    .beginUniqueWork(String.valueOf(reminder.getMovieId()), ExistingWorkPolicy.REPLACE, workRequest)
+                    .enqueue();
+        }
     }
 }

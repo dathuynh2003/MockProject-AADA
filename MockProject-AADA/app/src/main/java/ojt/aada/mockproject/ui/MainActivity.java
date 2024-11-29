@@ -1,5 +1,9 @@
 package ojt.aada.mockproject.ui;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -14,24 +18,34 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import ojt.aada.domain.models.Reminder;
 import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.ActivityMainBinding;
 import ojt.aada.mockproject.databinding.NavHeaderBinding;
 import ojt.aada.mockproject.di.MyApplication;
+import ojt.aada.mockproject.workers.ReminderWorker;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    private static final int REQUEST_CODE_POST_NOTIFICATIONS = 1;
     private ActivityMainBinding binding;
     private NavHeaderBinding navHeaderBinding;
     private boolean mIsGrid;
@@ -45,15 +59,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Check for notification permission
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE_POST_NOTIFICATIONS);
+        }
+
         ((MyApplication) getApplicationContext()).appComponent.inject(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        mViewModel.getReminderLiveData().observe(this, reminders -> {
-            if (reminders != null) {
-                Log.d("TAG", "onCreate: " + reminders.size());
-            }
-        });
 
         View headerView = binding.navView.getHeaderView(0);
         navHeaderBinding = DataBindingUtil.bind(headerView);
@@ -73,11 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             binding.appBarMain.toolBar.setTitle(movie.getTitle());
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
+            mViewModel.setCurrentPageLiveData(0);
             actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
             actionBarDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
             actionBarDrawerToggle.setToolbarNavigationClickListener(v -> {
@@ -119,7 +128,16 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().show();
         }
 
-//        navHeaderBinding.topReminderRecyclerView.setAdapter();
+        NavHeaderReminderAdapter navHeaderReminderAdapter = new NavHeaderReminderAdapter();
+        navHeaderBinding.topReminderRecyclerView.setAdapter(navHeaderReminderAdapter);
+
+        mViewModel.getReminderLiveData().observe(this, reminders -> {
+            if (reminders != null) {
+                reminders.sort((o1, o2) -> Long.compare(o1.getTime(), o2.getTime()));
+                navHeaderReminderAdapter.submitList(reminders.subList(0, Math.min(reminders.size(), 2)));
+            }
+        });
+
 
 
         navHeaderBinding.showAllBtn.setOnClickListener(v -> {
@@ -173,17 +191,23 @@ public class MainActivity extends AppCompatActivity {
                         // Other tab (1,2,3) move to tab 0 but still display in Detail Fragment
                         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
                         binding.appBarMain.toolBar.setTitle(mViewModel.getSelectedMovieLiveData().getValue().getTitle());
+
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
+
 //                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
                     } else {
                         // Other tab (1,2,3) move to tab 0 was displaying in List Fragment
                         binding.appBarMain.toolBar.setTitle("Movies");
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(true);
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(true);
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(true);
+                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(true);
                         changLayoutItem.setVisible(true);
                     }
-
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(true);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(true);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(true);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(true);
 
                     searchItem.setVisible(false);
                     break;
@@ -266,13 +290,13 @@ public class MainActivity extends AppCompatActivity {
             mIsGrid = !mIsGrid;
             mViewModel.setIsGrid(mIsGrid);
         } else if (item.getItemId() == R.id.action_menu_popular) {
-            Log.d("TAG", "onOptionsItemSelected: popular");
+            mViewModel.setCategorySearch("Popular Movies");
         } else if (item.getItemId() == R.id.action_menu_top_rated) {
-            Log.d("TAG", "onOptionsItemSelected: top rated");
+            mViewModel.setCategorySearch("Top Rated Movies");
         } else if (item.getItemId() == R.id.action_menu_upcoming) {
-            Log.d("TAG", "onOptionsItemSelected: upcoming");
+            mViewModel.setCategorySearch("Upcoming Movies");
         } else if (item.getItemId() == R.id.action_menu_now_playing) {
-            Log.d("TAG", "onOptionsItemSelected: now playing");
+            mViewModel.setCategorySearch("Now Playing Movies");
         }
         return true;
     }
@@ -288,10 +312,10 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 
         if (navController.getCurrentDestination().getId() != R.id.main_fragment) {
-            navController.popBackStack();
             if (navController.getCurrentDestination().getId() == R.id.profile_fragment) {
                 this.getSupportActionBar().show();
             }
+            navController.popBackStack();
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
             return;
         }

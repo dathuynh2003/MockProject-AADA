@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="ojt.aada.mockproject.utils.FunctionUtils"/>
+        <import type="ojt.aada.mockproject.utils.FunctionUtils" />
 
         <variable
             name="user"
@@ -13,7 +13,6 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -29,8 +28,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_button"
                 android:text="Cancel"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textAllCaps="false" />
 
             <ImageView
                 android:id="@+id/img_avatar"
@@ -40,8 +38,7 @@
                 android:background="@drawable/rounded_corners"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
-                app:bitmap="@{user.avatar}"
-                />
+                app:bitmap="@{user.avatar}" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/done_btn"
@@ -49,8 +46,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_button"
                 android:text="Done"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textAllCaps="false" />
         </LinearLayout>
 
         <TextView
@@ -59,6 +55,7 @@
             android:layout_marginStart="10dp"
             android:paddingHorizontal="5dp"
             android:text="Name"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <EditText
@@ -76,6 +73,7 @@
             android:layout_marginStart="10dp"
             android:paddingHorizontal="5dp"
             android:text="sample@example.com"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <EditText
@@ -84,7 +82,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:inputType="textEmailAddress"
-            android:text="@={user.email}" />
+            android:text="@={user.email}"
+            android:textColor="@color/black" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -101,6 +100,7 @@
                 android:layout_width="296dp"
                 android:layout_height="wrap_content"
                 android:text="@{user.dob}"
+                android:textColor="@color/black"
                 android:textSize="24sp" />
         </LinearLayout>
 
@@ -120,13 +120,17 @@
                 android:id="@+id/male_rb"
                 android:layout_width="121dp"
                 android:layout_height="wrap_content"
-                android:text="Male" />
+                android:text="Male"
+                android:textColor="@color/black"
+                />
 
             <RadioButton
                 android:id="@+id/female_rb"
                 android:layout_width="121dp"
                 android:layout_height="wrap_content"
-                android:text="Female" />
+                android:text="Female"
+                android:textColor="@color/black"
+                />
         </RadioGroup>
 
     </LinearLayout>

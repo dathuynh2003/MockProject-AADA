@@ -20,6 +20,15 @@ public class Movie implements Parcelable {
     @SerializedName("poster_path")
     private String posterPath;
     private boolean isFavorite = false;
+    private Reminder reminder;
+
+    public Reminder getReminder() {
+        return reminder;
+    }
+
+    public void setReminder(Reminder reminder) {
+        this.reminder = reminder;
+    }
 
     public boolean isFavorite() {
         return isFavorite;

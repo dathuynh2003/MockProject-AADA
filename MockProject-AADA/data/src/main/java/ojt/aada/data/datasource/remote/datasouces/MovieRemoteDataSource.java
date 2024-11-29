@@ -141,6 +141,11 @@ public class MovieRemoteDataSource extends RxPagingSource<Integer, Movie> {
     }
 
     public Single<Movie> getMovieDetail(Movie movie) {
+
+        
+
+
+
         return movieRetrofitAPI.getMovieDetail(movie.getId());
     }
 }

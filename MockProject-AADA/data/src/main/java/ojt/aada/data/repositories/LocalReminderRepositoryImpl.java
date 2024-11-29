@@ -37,17 +37,22 @@ public class LocalReminderRepositoryImpl implements LocalReminderRepository {
     @Override
     public Completable addReminder(Reminder reminder) {
         return Completable.fromAction(() -> mReminderDAO.insert(ReminderMapper.toEntity(reminder)))
-                .subscribeOn(Schedulers.io());    }
-
-    @Override
-    public Completable removeReminder(Reminder reminder) {
-        return Completable.fromAction(() -> mReminderDAO.delete(reminder.getId()))
                 .subscribeOn(Schedulers.io());
     }
 
     @Override
-    public void updateReminder(Reminder reminder) {
+    public Completable removeReminder(Reminder reminder) {
+        return Completable.fromAction(() -> mReminderDAO.delete(reminder.getMovieId()))
+                .subscribeOn(Schedulers.io());
+    }
 
+
+    @Override
+    public Completable updateReminder(Reminder reminder) {
+        ReminderEntity reminderEntity = ReminderMapper.toEntity(reminder);
+        return Completable.fromAction(() -> mReminderDAO
+                        .updateReminderByMovieId(reminderEntity.getTime(), reminderEntity.getMovieId()))
+                .subscribeOn(Schedulers.io());
     }
 
     @Override

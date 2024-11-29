@@ -38,6 +38,9 @@ dependencies {
     implementation project(':domain')
     implementation project(':data')
 
+    //Worker
+    implementation libs.work.runtime
+
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
     // Add the dependency for the Realtime Database library
@@ -51,6 +54,7 @@ dependencies {
     //Dagger
     implementation libs.dagger
     implementation libs.androidx.swiperefreshlayout
+    implementation libs.androidx.work.rxjava2
     annotationProcessor libs.dagger.compiler
     // https://mvnrepository.com/artifact/androidx.paging/paging-rxjava2
     implementation(libs.paging.rxjava2)

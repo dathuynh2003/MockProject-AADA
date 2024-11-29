@@ -41,6 +41,7 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<List<Movie>> mFilteredFavMoviesLiveData = new MutableLiveData<>();
     private LiveData<UserProfile> mUserProfileLiveData;
     private LiveData<List<Reminder>> mReminderLiveData;
+    private MutableLiveData<String> mCategorySearch = new MutableLiveData<>();
 
     private boolean mIsMoveToDetail = false;
     private String mSearchTitle;
@@ -101,7 +102,21 @@ public class MainViewModel extends ViewModel {
             mSelectedMovieLiveData.setValue(null);
             return;
         }
-        mSelectedMovieLiveData.setValue(movie);     //Nearly like setter for mSelectedMovieLiveData
+
+        boolean isReminder = false;
+        for (Reminder reminder : mReminderLiveData.getValue()) {
+            if (reminder.getMovieId() == movie.getId()) {
+                movie.setReminder(reminder);
+                isReminder = true;
+                break;
+            }
+        }
+
+        if (!isReminder) {
+            movie.setReminder(null);
+        }
+
+        mSelectedMovieLiveData.setValue(movie);
         Disposable disposable = mGetCastNCrewUseCase.getCastNCrewFromAPI(movie)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -141,6 +156,10 @@ public class MainViewModel extends ViewModel {
         // Update the movie list
         mUpdatedMovieLiveData.setValue(movie);
 //        getRemoteMovieList(); // Reload the data
+
+        if (mSelectedMovieLiveData.getValue() != null && mSelectedMovieLiveData.getValue().getId() == movie.getId()) {
+            mSelectedMovieLiveData.setValue(movie);
+        }
     }
 
 
@@ -246,8 +265,23 @@ public class MainViewModel extends ViewModel {
         mMangeReminderUseCase.addReminder(reminder);
     }
 
+    public void updateReminder(Reminder reminder) {
+        mMangeReminderUseCase.updateReminder(reminder);
+    }
+
     public void deleteReminder(Reminder reminder) {
         mMangeReminderUseCase.deleteReminder(reminder);
+        if (mSelectedMovieLiveData.getValue() != null && mSelectedMovieLiveData.getValue().getId() == reminder.getMovieId()) {
+            mSelectedMovieLiveData.getValue().setReminder(null);
+        }
+    }
+
+    public MutableLiveData<String> getCategorySearch() {
+        return mCategorySearch;
+    }
+
+    public void setCategorySearch(String category) {
+        mCategorySearch.setValue(category);
     }
 
 

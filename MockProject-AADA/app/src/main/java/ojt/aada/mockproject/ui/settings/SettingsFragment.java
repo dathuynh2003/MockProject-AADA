@@ -1,9 +1,11 @@
 package ojt.aada.mockproject.ui.settings;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
@@ -24,7 +26,11 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+import javax.inject.Inject;
+
 import ojt.aada.mockproject.R;
+import ojt.aada.mockproject.di.MyApplication;
+import ojt.aada.mockproject.ui.MainViewModel;
 import ojt.aada.mockproject.utils.Constants;
 
 /**
@@ -33,6 +39,10 @@ import ojt.aada.mockproject.utils.Constants;
  * create an instance of this fragment.
  */
 public class SettingsFragment extends PreferenceFragmentCompat {
+
+    @Inject
+    MainViewModel mViewModel;
+
     private String curCategoryStr;
     private int curRating;
     private int curReleaseYear;
@@ -54,6 +64,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ((MyApplication) requireContext().getApplicationContext()).appComponent.inject(this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -62,6 +78,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
         readSettingsFromPreferences();
+
+        mViewModel.getCategorySearch().observe(this, category -> {
+            curCategoryStr = category;
+            categoryListPreference.setValue(category);
+
+        });
 
         categoryListPreference = findPreference(Constants.CATEGORY_KEY);
         ratingPreference = findPreference(Constants.RATING_KEY);

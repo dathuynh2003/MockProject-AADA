@@ -23,7 +23,7 @@
         android:id="@+id/seekbar_rate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="5"
+        android:max="10"
         android:progress="0" />
 
     <!-- Buttons for confirmation -->

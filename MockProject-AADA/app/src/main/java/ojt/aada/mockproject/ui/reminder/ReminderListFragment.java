@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.work.WorkManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +79,7 @@ public class ReminderListFragment extends Fragment {
         alertDialog.setMessage("Are you sure you want to delete this reminder?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", (dialog, which) -> {
             mViewModel.deleteReminder(reminder);
+            WorkManager.getInstance(requireContext()).cancelAllWorkByTag(String.valueOf(reminder.getMovieId()));
             alertDialog.dismiss();
         });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", (dialog, which) -> {

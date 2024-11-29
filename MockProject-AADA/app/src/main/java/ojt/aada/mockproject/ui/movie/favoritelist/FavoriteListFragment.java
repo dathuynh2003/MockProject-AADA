@@ -78,7 +78,7 @@ public class FavoriteListFragment extends Fragment {
             Movie movie = (Movie) v.getTag();
             movie.setFavorite(!movie.isFavorite());
             mViewModel.updateMovie(movie); // Update ViewModel
-            mViewModel.setSelectedMovieLiveData(movie); // Update ViewModel
+//            mViewModel.setSelectedMovieLiveData(movie); // Update ViewModel
         });
 
         mFavoriteListRVAdapter.setOnSelectedMovieListener(v -> {

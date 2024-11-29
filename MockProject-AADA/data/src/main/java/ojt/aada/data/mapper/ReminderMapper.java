@@ -10,6 +10,6 @@ public class ReminderMapper {
     }
 
     public static Reminder toDomain(ReminderEntity reminderEntity) {
-        return new Reminder(reminderEntity.getId(), reminderEntity.getTime(), reminderEntity.getMovieId(), reminderEntity.getTitle(), reminderEntity.getReleaseDate(), reminderEntity.getPosterPath(), reminderEntity.getRating());
+        return new Reminder(reminderEntity.getTime(), reminderEntity.getMovieId(), reminderEntity.getTitle(), reminderEntity.getReleaseDate(), reminderEntity.getPosterPath(), reminderEntity.getRating());
     }
 }

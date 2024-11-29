@@ -38,6 +38,17 @@ public class ManageReminderUseCase {
         compositeDisposable.add(disposable);
     }
 
+    public void updateReminder(Reminder reminder) {
+        Disposable disposable = localReminderRepository.updateReminder(reminder)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> Log.d("TAG", "Reminder updated successfully"),
+                        throwable -> Log.d("TAG", "Error updating reminder: " + throwable)
+                );
+        compositeDisposable.add(disposable);
+    }
+
     public void deleteReminder(Reminder reminder) {
         Disposable disposable = localReminderRepository.removeReminder(reminder)
                 .subscribeOn(Schedulers.io())

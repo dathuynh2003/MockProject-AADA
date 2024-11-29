@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Reminder implements Parcelable {
     private long id;
     private long time;
@@ -17,8 +20,7 @@ public class Reminder implements Parcelable {
     public Reminder() {
     }
 
-    public Reminder(long id, long time, int movieId, String title, String releaseDate, String posterPath, double rating) {
-        this.id = id;
+    public Reminder(long time, int movieId, String title, String releaseDate, String posterPath, double rating) {
         this.time = time;
         this.movieId = movieId;
         this.title = title;
@@ -119,5 +121,17 @@ public class Reminder implements Parcelable {
         dest.writeString(releaseDate);
         dest.writeString(posterPath);
         dest.writeDouble(rating);
+    }
+
+    public Map toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("time", time);
+        map.put("movieId", movieId);
+        map.put("title", title);
+        map.put("releaseDate", releaseDate);
+        map.put("posterPath", posterPath);
+        map.put("rating", rating);
+        return map;
     }
 }

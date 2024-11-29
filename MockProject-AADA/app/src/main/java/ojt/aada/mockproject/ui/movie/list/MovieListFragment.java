@@ -88,6 +88,14 @@ public class MovieListFragment extends Fragment {
 //            }
         });
 
+        // Observe the category search from the view model and update the remote movie list
+        mViewModel.getCategorySearch().observe(getViewLifecycleOwner(), category -> {
+            curCategoryStr = category;
+            binding.pbLoading.setVisibility(View.VISIBLE);
+            mViewModel.setIsCallApi(true);
+            mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear);
+        });
+
 
         //  Observe the isGrid value from the view model and update the recycler view layout
         mViewModel.getIsGrid().observe(getViewLifecycleOwner(), isGrid -> {
@@ -99,7 +107,7 @@ public class MovieListFragment extends Fragment {
 
         //  Observe the updated movie from the view model and update the item in the recycler view
         mViewModel.getUpdatedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
-//            int position = mMovieListRVAdapter.getCurrentList().indexOf(movie);
+            int position = mMovieListRVAdapter.getCurrentList().indexOf(movie);
             for (int i = 0; i < mMovieListRVAdapter.getCurrentList().size(); i++) {
                 if (mMovieListRVAdapter.getCurrentList().get(i).getId() == movie.getId()) {
                     mMovieListRVAdapter.getCurrentList().get(i).setFavorite(movie.isFavorite());
@@ -183,10 +191,8 @@ public class MovieListFragment extends Fragment {
         curReleaseYear = Integer.parseInt(sp.getString(Constants.RELEASE_YEAR_KEY, "1970"));
         curSortByStr = sp.getString(Constants.SORT_BY_KEY, "Release Date");
         mViewModel.setIsCallApi(true);
-
         if (Constants.CATEGORY_KEY.equals(key)) {
             mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear);
-            binding.movieRv.scrollToPosition(0);
         } else if (Constants.RATING_KEY.equals(key)) {
             mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear);
         } else if (Constants.RELEASE_YEAR_KEY.equals(key)) {
@@ -194,5 +200,8 @@ public class MovieListFragment extends Fragment {
         } else if (Constants.SORT_BY_KEY.equals(key)) {
             mViewModel.getRemoteMovieList(curCategoryStr, curSortByStr, curRating, curReleaseYear);
         }
+
+        binding.movieRv.scrollToPosition(0);
+
     };
 }
