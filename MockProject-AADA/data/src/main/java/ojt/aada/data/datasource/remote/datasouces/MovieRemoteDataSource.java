@@ -31,6 +31,7 @@ import ojt.aada.domain.models.Movie;
 @Singleton
 public class MovieRemoteDataSource extends RxPagingSource<Integer, Movie> {
     private List<Movie> mMovieList;
+    private Single<List<MovieEntity>> favMovieSingle;
     private final MovieRetrofitAPI movieRetrofitAPI;
     private MovieDAO mMovieDAO;
 
@@ -76,7 +77,7 @@ public class MovieRemoteDataSource extends RxPagingSource<Integer, Movie> {
         Single<MovieResponse> movieSingle = movieRetrofitAPI.getMovies(category, page)
                 .subscribeOn(Schedulers.io());
 
-        Single<List<MovieEntity>> favMovieSingle = mMovieDAO.getAllMovies()
+        favMovieSingle = mMovieDAO.getAllMovies()
                 .subscribeOn(Schedulers.io()).firstOrError();
 
         return Single.zip(
@@ -140,12 +141,18 @@ public class MovieRemoteDataSource extends RxPagingSource<Integer, Movie> {
         );
     }
 
-    public Single<Movie> getMovieDetail(Movie movie) {
+    public Single<Movie> getMovieDetail(int movieId) {
 
-        
+        Single<Movie> movieSingle = movieRetrofitAPI.getMovieDetail(movieId)
+                .subscribeOn(Schedulers.io());
 
-
-
-        return movieRetrofitAPI.getMovieDetail(movie.getId());
+        return Single.zip(
+                movieSingle,
+                favMovieSingle,
+                (response1, response2) -> {
+                    response1.setFavorite(response2.stream().anyMatch(movieEntity -> movieEntity.getId() == movieId));
+                    return response1;
+                }
+        );
     }
 }

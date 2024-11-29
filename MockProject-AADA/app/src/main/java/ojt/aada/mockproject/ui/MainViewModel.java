@@ -42,6 +42,7 @@ public class MainViewModel extends ViewModel {
     private LiveData<UserProfile> mUserProfileLiveData;
     private LiveData<List<Reminder>> mReminderLiveData;
     private MutableLiveData<String> mCategorySearch = new MutableLiveData<>();
+    private LiveData<Movie> mMovieDetailLiveData = new MutableLiveData<>();
 
     private boolean mIsMoveToDetail = false;
     private String mSearchTitle;
@@ -284,5 +285,14 @@ public class MainViewModel extends ViewModel {
         mCategorySearch.setValue(category);
     }
 
-
+    public void getMovieDetail(int movieId) {
+        Disposable disposable = mGetMovieDetailUseCase.getMovieDetailFromAPI(movieId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        mSelectedMovieLiveData::setValue,
+                        throwable -> Log.d("FATAL", "getMovieDetail: " + throwable)
+                );
+        mCompositeDisposable.add(disposable);
+    }
 }

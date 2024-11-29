@@ -137,9 +137,6 @@ public class MainActivity extends AppCompatActivity {
                 navHeaderReminderAdapter.submitList(reminders.subList(0, Math.min(reminders.size(), 2)));
             }
         });
-
-
-
         navHeaderBinding.showAllBtn.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_main_fragment_to_reminder_fragment);
@@ -161,6 +158,15 @@ public class MainActivity extends AppCompatActivity {
 
             binding.drawerLayout.closeDrawer(GravityCompat.START);
         });
+
+//        mViewModel.getMovieDetailLiveData().observe(this, movie -> {
+//            if (movie != null) {
+//                NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_tab);
+//                mViewModel.setSelectedMovieLiveData(movie);
+//                navController.navigate(R.id.action_movieListFragment_to_movieDetailFragment);
+//                actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+//            }
+//        });
 
         // Add the OnBackPressedCallback once in onCreate (not inside handleBackPressed)
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

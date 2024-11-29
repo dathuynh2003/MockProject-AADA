@@ -51,7 +51,7 @@ public class RemoteMovieRepositoryImpl implements RemoteMovieRepository {
     }
 
     @Override
-    public Single<Movie> getMovieDetail(Movie movie) {
-        return movieRemoteDataSource.getMovieDetail(movie);
+    public Single<Movie> getMovieDetail(int movieId) {
+        return movieRemoteDataSource.getMovieDetail(movieId);
     }
 }

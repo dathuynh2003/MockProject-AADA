@@ -98,8 +98,9 @@ public class ProfileFragment extends Fragment {
                     }
                 } else if ("gallery".equals(currentImageSource)) {
                     Uri imageUri = result.getData().getData();
-//                    avatarBitmap = ImageValidator.convertUriToBitmap(getContext(), imageUri);
-//                    avatarImageView.setImageBitmap(avatarBitmap);
+                    Bitmap avatarBitmap = ImageValidator.convertUriToBitmap(getContext(), imageUri);
+                    binding.imgAvatar.setImageBitmap(avatarBitmap);
+                    mProfileViewModel.getUserProfileMutableLiveData().getValue().setAvatar(ImageValidator.bitmapToBase64(avatarBitmap));
                 }
             }
         });

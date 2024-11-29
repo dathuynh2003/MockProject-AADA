@@ -1,10 +1,13 @@
 package ojt.aada.mockproject.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 public class ImageValidator {
 
@@ -24,5 +27,22 @@ public class ImageValidator {
 
         byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    public static Bitmap convertUriToBitmap(Context context, Uri uri) {
+        InputStream inputStream = null;
+        try {
+            // Use ContentResolver to get InputStream from Uri
+            inputStream = context.getContentResolver().openInputStream(uri);
+
+            // Check null
+            if (inputStream != null) {
+                // Convert into bitmap
+                return BitmapFactory.decodeStream(inputStream);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

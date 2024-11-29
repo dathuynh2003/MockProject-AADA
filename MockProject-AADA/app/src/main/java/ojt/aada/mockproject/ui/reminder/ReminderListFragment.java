@@ -5,7 +5,10 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.work.WorkManager;
 
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.view.ViewGroup;
 import javax.inject.Inject;
 
 import ojt.aada.domain.models.Reminder;
+import ojt.aada.mockproject.R;
 import ojt.aada.mockproject.databinding.FragmentReminderListBinding;
 import ojt.aada.mockproject.di.MyApplication;
 import ojt.aada.mockproject.ui.MainViewModel;
@@ -26,6 +30,7 @@ public class ReminderListFragment extends Fragment {
 
     private FragmentReminderListBinding binding;
     private ReminderListRVAdapter adapter;
+    private NavController navController;
 
     public ReminderListFragment() {
         // Required empty public constructor
@@ -62,7 +67,8 @@ public class ReminderListFragment extends Fragment {
 
         adapter.setOnClickListener(v -> {
             Reminder reminder = (Reminder) v.getTag();
-
+            mViewModel.getMovieDetail(reminder.getMovieId());
+            navController.popBackStack();
         });
 
         adapter.setDeleteOnClickListener(v -> {
@@ -72,6 +78,12 @@ public class ReminderListFragment extends Fragment {
 
         binding.rvReminder.setAdapter(adapter);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        navController = Navigation.findNavController(view);
     }
 
     private void showAlertDialog(Reminder reminder) {
