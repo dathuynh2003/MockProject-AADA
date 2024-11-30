@@ -34,15 +34,14 @@ import ojt.aada.domain.usecase.UpdateFavMovieUseCase;
 public class MainViewModel extends ViewModel {
     private final MutableLiveData<PagingData<Movie>> mMovieListLiveData;
     private LiveData<List<Movie>> mFavoriteMoviesLiveData;
-    private MutableLiveData<Movie> mSelectedMovieLiveData;
+    private final MutableLiveData<Movie> mSelectedMovieLiveData;
     private final MutableLiveData<ArrayList<CastnCrew>> mCastNCrewLiveData;
     private final MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>();
     private final MutableLiveData<Movie> mUpdatedMovieLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Movie>> mFilteredFavMoviesLiveData = new MutableLiveData<>();
     private LiveData<UserProfile> mUserProfileLiveData;
     private LiveData<List<Reminder>> mReminderLiveData;
-    private MutableLiveData<String> mCategorySearch = new MutableLiveData<>();
-    private LiveData<Movie> mMovieDetailLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> mCategorySearch = new MutableLiveData<>();
 
     private boolean mIsMoveToDetail = false;
     private String mSearchTitle;

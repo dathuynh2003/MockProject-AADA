@@ -5,5 +5,5 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.MockProjectAADA" parent="Base.Theme.MockProjectAADA" />
+<!--    <style name="Theme.MockProjectAADA" parent="Base.Theme.MockProjectAADA" />-->
 </resources>

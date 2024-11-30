@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
         mViewModel.getSelectedMovieLiveData().observe(this, movie -> {
-//            adapter.replaceFragment(0, movieDetailFragment);
             if (movie == null) {
                 binding.appBarMain.toolBar.setTitle("Movies");
                 return;
@@ -98,16 +97,6 @@ public class MainActivity extends AppCompatActivity {
         String androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         mViewModel.getUserProfileLiveData(androidId).observe(this, userProfile -> {
             if (userProfile != null) {
-//                headerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @Override
-//                    public void onGlobalLayout() {
-//                        headerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                        NavHeaderBinding navHeaderBinding = DataBindingUtil.bind(headerView);
-//                        if (navHeaderBinding != null) {
-//                            navHeaderBinding.setUser(userProfile);
-//                        }
-//                    }
-//                });
                 if (navHeaderBinding != null) {
                     navHeaderBinding.setUser(userProfile);
                 }
@@ -133,8 +122,15 @@ public class MainActivity extends AppCompatActivity {
 
         mViewModel.getReminderLiveData().observe(this, reminders -> {
             if (reminders != null) {
-                reminders.sort((o1, o2) -> Long.compare(o1.getTime(), o2.getTime()));
-                navHeaderReminderAdapter.submitList(reminders.subList(0, Math.min(reminders.size(), 2)));
+//                ArrayList<Reminder> reminderArrayList = new ArrayList<>();
+//                reminders.forEach(reminder -> {
+//                    Reminder newReminder = new Reminder(reminder.getTime(), reminder.getMovieId(), reminder.getTitle(), reminder.getReleaseDate(), reminder.getPosterPath(), reminder.getRating());
+//                    reminderArrayList.add(newReminder);
+//                });
+
+//                Log.d("TAG123", "onCreate: " + reminderArrayList.size());
+                navHeaderReminderAdapter.submitList(reminders);
+//                navHeaderReminderAdapter.notifyDataSetChanged();
             }
         });
         navHeaderBinding.showAllBtn.setOnClickListener(v -> {
@@ -144,10 +140,8 @@ public class MainActivity extends AppCompatActivity {
             binding.appBarMain.toolBar.setTitle("Reminders");
             binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
             binding.appBarMain.toolBar.getMenu().findItem(R.id.action_search).setVisible(false);
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
-            binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
+
+            setupFilterMenu(false);
 
             actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
             actionBarDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
@@ -158,15 +152,6 @@ public class MainActivity extends AppCompatActivity {
 
             binding.drawerLayout.closeDrawer(GravityCompat.START);
         });
-
-//        mViewModel.getMovieDetailLiveData().observe(this, movie -> {
-//            if (movie != null) {
-//                NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_tab);
-//                mViewModel.setSelectedMovieLiveData(movie);
-//                navController.navigate(R.id.action_movieListFragment_to_movieDetailFragment);
-//                actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-//            }
-//        });
 
         // Add the OnBackPressedCallback once in onCreate (not inside handleBackPressed)
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -187,9 +172,6 @@ public class MainActivity extends AppCompatActivity {
         MenuItem changLayoutItem = menu.findItem(R.id.action_layout);
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-//        changLayoutItem.setVisible(true);
-//        searchItem.setVisible(false);
-
         mViewModel.getCurrentPageLiveData().observe(this, integer -> {
             switch (integer) {
                 case 0:
@@ -197,21 +179,14 @@ public class MainActivity extends AppCompatActivity {
                         // Other tab (1,2,3) move to tab 0 but still display in Detail Fragment
                         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
                         binding.appBarMain.toolBar.setTitle(mViewModel.getSelectedMovieLiveData().getValue().getTitle());
-
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
+                        changLayoutItem.setVisible(false);
+                        setupFilterMenu(false);
 
 //                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_layout).setVisible(false);
                     } else {
                         // Other tab (1,2,3) move to tab 0 was displaying in List Fragment
                         binding.appBarMain.toolBar.setTitle("Movies");
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(true);
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(true);
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(true);
-                        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(true);
+                        setupFilterMenu(true);
                         changLayoutItem.setVisible(true);
                     }
 
@@ -225,10 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
                     searchItem.setVisible(true);
 
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
+                    setupFilterMenu(false);
                     break;
                 case 2:
                     // Move to tab 2
@@ -238,10 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
                     searchItem.setVisible(false);
 
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
+                    setupFilterMenu(false);
                     break;
                 case 3:
                     // Move to tab 3
@@ -251,10 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
                     searchItem.setVisible(false);
 
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(false);
-                    binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(false);
+                    setupFilterMenu(false);
                     break;
             }
         });
@@ -313,7 +279,9 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
+    /**
+     * Handle all case of back pressed in app
+     */
     public void handleBackPressed() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 
@@ -347,5 +315,19 @@ public class MainActivity extends AppCompatActivity {
 //        finish();
         moveTaskToBack(true);
 //        getOnBackPressedDispatcher().onBackPressed();
+    }
+
+    /**
+     * Set filter menu to visible or invisible
+     *
+     * @param isVisible boolean
+     *                  true: visible
+     *                  false: invisible
+     */
+    private void setupFilterMenu(boolean isVisible) {
+        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_popular).setVisible(isVisible);
+        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_top_rated).setVisible(isVisible);
+        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_upcoming).setVisible(isVisible);
+        binding.appBarMain.toolBar.getMenu().findItem(R.id.action_menu_now_playing).setVisible(isVisible);
     }
 }

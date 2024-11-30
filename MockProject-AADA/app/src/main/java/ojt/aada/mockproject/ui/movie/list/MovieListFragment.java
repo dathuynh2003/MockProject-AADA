@@ -107,7 +107,6 @@ public class MovieListFragment extends Fragment {
 
         //  Observe the updated movie from the view model and update the item in the recycler view
         mViewModel.getUpdatedMovieLiveData().observe(getViewLifecycleOwner(), movie -> {
-            int position = mMovieListRVAdapter.getCurrentList().indexOf(movie);
             for (int i = 0; i < mMovieListRVAdapter.getCurrentList().size(); i++) {
                 if (mMovieListRVAdapter.getCurrentList().get(i).getId() == movie.getId()) {
                     mMovieListRVAdapter.getCurrentList().get(i).setFavorite(movie.isFavorite());
@@ -116,8 +115,6 @@ public class MovieListFragment extends Fragment {
                 }
             }
         });
-
-        Log.d("TAG", "onCreateView: " + binding.swipeRefreshLayout.isRefreshing());
 
         binding.swipeRefreshLayout.setOnRefreshListener(() -> {
             if (!mViewModel.getIsCallApi()) {
@@ -150,14 +147,6 @@ public class MovieListFragment extends Fragment {
         }
 
         mMovieListRVAdapter.addLoadStateListener(loadState -> {
-//            if (loadState.getAppend() instanceof LoadState.Error) {
-//                LoadState.Error error = (LoadState.Error) loadState.getAppend();
-//                Log.d("TAG", "setupRecyclerView: " + error.getError().getMessage());
-//            } else if (loadState.getAppend() instanceof LoadState.Loading) {
-//                Log.d("TAG", "setupRecyclerView: Loading");
-//            } else {
-//                Log.d("TAG", "setupRecyclerView: Loaded");
-//            }
             binding.movieRv.post(() -> {
                 mMovieListRVAdapter.setLoading(loadState.getAppend() instanceof LoadState.Loading);
             });

@@ -106,7 +106,6 @@ public class ProfileFragment extends Fragment {
         });
 
 
-
         registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 if ("camera".equals(currentImageSource)) {
@@ -118,6 +117,9 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
             }
         });
+
+        mProfileViewModel.setUserProfileMutableLiveData(mViewModel.getUserProfileLiveData("").getValue(), false);
+
     }
 
     @Override
@@ -126,11 +128,13 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false);
 
-        mViewModel.getUserProfileLiveData("").observe(getViewLifecycleOwner(), user -> {
-            mProfileViewModel.setUserProfileMutableLiveData(user, false);
-        });
+//        mViewModel.getUserProfileLiveData("").observe(getViewLifecycleOwner(), user -> {
+//            mProfileViewModel.setUserProfileMutableLiveData(user, false);
+//        });
 
-        mProfileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), binding::setUser);
+        mProfileViewModel.getUserProfileMutableLiveData().observe(getViewLifecycleOwner(), user -> {
+            binding.setUser(user);
+        });
 
         binding.editGender.setOnCheckedChangeListener((group, checkedId) -> {
             String gender = checkedId == R.id.male_rb ? "Male" : "Female";
@@ -143,6 +147,7 @@ public class ProfileFragment extends Fragment {
         binding.editUserDob.setOnClickListener(v -> showDatePicker(binding));
 
         binding.cancelBtn.setOnClickListener(v -> {
+//            mProfileViewModel.setUserProfileMutableLiveData(null, true);
             navController.popBackStack();
             ((AppCompatActivity) requireActivity()).getSupportActionBar().show();
         });
@@ -150,6 +155,7 @@ public class ProfileFragment extends Fragment {
         binding.doneBtn.setOnClickListener(v -> {
             // Save user profile
             mViewModel.updateUserProfile(mProfileViewModel.getUserProfileMutableLiveData().getValue());
+//            mProfileViewModel.setUserProfileMutableLiveData(null, true);
 
             navController.popBackStack();
             ((AppCompatActivity) requireActivity()).getSupportActionBar().show();

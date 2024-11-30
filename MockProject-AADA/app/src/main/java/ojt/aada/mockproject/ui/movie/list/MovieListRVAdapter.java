@@ -158,6 +158,4 @@ public class MovieListRVAdapter extends PagingDataAdapter<Movie, RecyclerView.Vi
     }
 
 
-
-
 }

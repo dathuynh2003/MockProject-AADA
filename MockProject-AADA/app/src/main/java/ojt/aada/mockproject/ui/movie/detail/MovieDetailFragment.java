@@ -117,23 +117,23 @@ public class MovieDetailFragment extends Fragment {
             }
         });
 
-        mViewModel.getReminderLiveData().observe(getViewLifecycleOwner(), reminders -> {
-            boolean isReminder = false;
-            for (Reminder reminder : reminders) {
-                if (reminder.getMovieId() == mViewModel.getSelectedMovieLiveData().getValue().getId()) {
-                    mViewModel.getSelectedMovieLiveData().getValue().setReminder(reminder);
-                    Date reminderDate = new Date(reminder.getTime());
-                    isReminder = true;
-                    binding.reminderText.setVisibility(View.VISIBLE);
-                    binding.reminderText.setText(Validator.convertDate(reminderDate, "yyyy/MM/dd HH:mm"));
-                    break;
-                }
-            }
-
-            if (!isReminder) {
-                binding.reminderText.setText("");
-            }
-        });
+//        mViewModel.getReminderLiveData().observe(getViewLifecycleOwner(), reminders -> {
+//            boolean isReminder = false;
+//            for (Reminder reminder : reminders) {
+//                if (reminder.getMovieId() == mViewModel.getSelectedMovieLiveData().getValue().getId()) {
+//                    mViewModel.getSelectedMovieLiveData().getValue().setReminder(reminder);
+//                    Date reminderDate = new Date(reminder.getTime());
+//                    isReminder = true;
+//                    binding.reminderText.setVisibility(View.VISIBLE);
+//                    binding.reminderText.setText(Validator.convertDate(reminderDate, "yyyy/MM/dd HH:mm"));
+//                    break;
+//                }
+//            }
+//
+//            if (!isReminder) {
+//                binding.reminderText.setText("");
+//            }
+//        });
 
         mViewModel.getCastNCrewLiveData().observe(getViewLifecycleOwner(), castNCrew -> {
             if (castNCrew != null) {
@@ -207,10 +207,12 @@ public class MovieDetailFragment extends Fragment {
                     mViewModel.addReminder(newReminder);
                     scheduleReminder(requireContext(), newReminder);
                 } else {
-                    Reminder reminder = movie.getReminder();
-                    reminder.setTime(calendar.getTimeInMillis());
-                    mViewModel.updateReminder(reminder);
-                    scheduleReminder(requireContext(), reminder);
+//                    Reminder reminder = movie.getReminder();
+//                    reminder.setTime(calendar.getTimeInMillis());
+                    // Clone newReminder to get new pointer
+                    Reminder newReminder = new Reminder(calendar.getTimeInMillis(), movie.getId(), movie.getTitle(), movie.getReleaseDate(), movie.getPosterPath(), movie.getRating());
+                    mViewModel.updateReminder(newReminder);
+                    scheduleReminder(requireContext(), newReminder);
                 }
             }
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);

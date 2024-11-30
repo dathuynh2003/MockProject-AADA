@@ -29,6 +29,12 @@ public class ProfileViewModel extends ViewModel {
      * @param isSamePlace boolean type
      */
     public void setUserProfileMutableLiveData(UserProfile userProfile, boolean isSamePlace) {
+
+        if (mUserProfileMutableLiveData.getValue() != null) {
+            return;
+        }
+
+
         if (isSamePlace) {
             mUserProfileMutableLiveData.setValue(userProfile);
         } else {
