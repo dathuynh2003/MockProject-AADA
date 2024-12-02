@@ -1,7 +1,7 @@
 <h1 align="center">Movies App</h1>
 
-<img src='art/img.png' width='25%'/><img src = 'art/img_2.png' width='25%'/><img src='art/img_1.png' width='25%'/><img src ='art/img_3.png' width='25%'/>
-<img src='art/img_4.png' width='25%'/><img src = 'art/img_5.png' width='25%'/><img src='art/img_6.png' width='25%'/>
+<img src='./MockProject-AADA/arts/img.png' width='25%'/><img src = './MockProject-AADA/arts/img_2.png' width='25%'/><img src='./MockProject-AADA/arts/img_1.png' width='25%'/><img src ='./MockProject-AADA/arts/img_3.png' width='25%'/>
+<img src='./MockProject-AADA/arts/img_4.png' width='25%'/><img src = './MockProject-AADA/arts/img_5.png' width='25%'/><img src='./MockProject-AADA/arts/img_6.png' width='25%'/>
 
 ## Table of Contents
 
@@ -48,7 +48,7 @@ This project is an Android app using [The Movie DB API](https://www.themoviedb.o
 
 ## Architectures
 
-![MVVM](./art/MyMovieApp_Architecture.png)
+![MVVM](./MockProject-AADA/arts/MyMovieApp_Architecture.png)
 
 I follow Google recommended [Guide to app architecture](https://developer.android.com/jetpack/guide) to structure our architecture based on MVVM, reactive UI using LiveData / RxJava observables and data binding.
 
