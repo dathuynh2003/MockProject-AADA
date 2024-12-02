@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import ojt.aada.mockproject.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
-    private static final int SPLASH_DISPLAY_LENGTH = 3000;
+    private static final int SPLASH_DISPLAY_LENGTH = 1500;
 
 
     @Override

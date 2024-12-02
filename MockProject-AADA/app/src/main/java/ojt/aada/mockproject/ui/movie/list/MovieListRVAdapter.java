@@ -72,10 +72,11 @@ public class MovieListRVAdapter extends PagingDataAdapter<Movie, RecyclerView.Vi
 
 
         Movie movie = getItem(position);
+        if (movie == null) return;
         if (isGrid) {
             MovieGridViewHolder viewHolder = (MovieGridViewHolder) holder;
             viewHolder.itemViewBinding.setMovie(movie);
-            Picasso.get().load(Constants.BASE_IMG_URL.concat(movie.getPosterPath()))
+            Picasso.get().load(Constants.BASE_IMG_URL + (movie.getPosterPath()))
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.error_image_black_24)
                     .into(viewHolder.itemViewBinding.moviePoster);
