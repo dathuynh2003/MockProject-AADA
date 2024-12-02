@@ -1,13 +1,16 @@
-# Movies App
+<h1 align="center">Movies App</h1>
 
-Mock project in the Android Advanced course.
+<img src='art/img.png' width='25%'/><img src = 'art/img_2.png' width='25%'/><img src='art/img_1.png' width='25%'/><img src ='art/img_3.png' width='25%'/>
+<img src='art/img_4.png' width='25%'/><img src = 'art/img_5.png' width='25%'/><img src='art/img_6.png' width='25%'/>
 
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [Features](#features)
+- [Tech Stacks](#tech-stacks)
+- [Architectures](#architectures)
+- [Package Structures](#package-structures)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -112,10 +115,6 @@ To install and run this project, follow these steps:
     ```
 2. Open the project in Android Studio.
 3. Build the project and run it on an emulator or a physical device.
-
-## Usage
-
-Provide instructions and examples for using the application. You can include screenshots or GIFs to illustrate the usage.
 
 ## Contributing
 
