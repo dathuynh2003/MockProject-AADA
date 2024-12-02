@@ -1,6 +1,8 @@
 <h1 align="center">Movies App</h1>
 
 <img src='./MockProject-AADA/arts/img.png' width='25%'/><img src = './MockProject-AADA/arts/img_2.png' width='25%'/><img src='./MockProject-AADA/arts/img_1.png' width='25%'/><img src ='./MockProject-AADA/arts/img_3.png' width='25%'/>
+<br/>
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
 <img src='./MockProject-AADA/arts/img_4.png' width='25%'/><img src = './MockProject-AADA/arts/img_5.png' width='25%'/><img src='./MockProject-AADA/arts/img_6.png' width='25%'/>
 
 ## Table of Contents
